@@ -62,6 +62,7 @@ import com.e.jona.randgo.DataHolder;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, GPXListeners.GPXParserListener, GPXListeners.GPXParserProgressListener  {
 
+    int on=0;
     boolean comenzar=false;
     private Timer myTimer;
     MapView map = null;
@@ -183,9 +184,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         requestMyLocation();
 
         map.onResume();
-        updateLocation(location);
         mLocationOverlay.getLastFix();
         mLocationOverlay.enableMyLocation();
+
 
     }
 
@@ -225,6 +226,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onLocationChanged(Location location) {
         //updateLocation(location);
         this.location=location;
+        if (on==0){
+            updateLocation(location);
+            on=1;
+        }
+
     }
 
     @Override
