@@ -5,6 +5,8 @@ package com.e.jona.randgo;
 // https://www.programcreek.com/java-api-examples/index.php?source_dir=osmdroid-master/osmdroid-android/src/main/java/org/osmdroid/views/overlay/MyLocationOverlay.java
 // https://code.google.com/archive/p/osmdroid/source/default/source
 //https://www.movable-type.co.uk/scripts/latlong.html
+//https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+//https://memorynotfound.com/calculating-elapsed-time-java/
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -54,11 +56,15 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import com.e.jona.randgo.DataHolder;
+import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, GPXListeners.GPXParserListener, GPXListeners.GPXParserProgressListener  {
 
@@ -78,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private ProgressDialog mProgressDialog = null;
     protected Polygon mDestinationPolygon;
     private float direction;
+    long millis_before, millis_after, millis, elapsed;
+    Date startDateTime, endDateTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -437,17 +445,46 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 break;*/
             case R.id.btnNavigation:
                 if(comenzar==false){
+                    millis_before = System.currentTimeMillis();
+                    startDateTime = new Date(millis_before);
                     Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
                     btnSearch.hide();
                     comenzar=true;
                 }
                 else{
-                    Toast.makeText(this, "La carrera ha terminado: Distancia recorrida xxxx, tiempo: yyy7", Toast.LENGTH_LONG).show();
+                    millis_after = System.currentTimeMillis();
+                    endDateTime = new Date(millis_after);
+                    Map<TimeUnit,Long> result = computeDiff(startDateTime, endDateTime);
+                    String tem=null;
+                    if (result.get(TimeUnit.HOURS)<10) tem="0%d";
+                    else tem="%d";
+                    if (result.get(TimeUnit.MINUTES)<10)tem+=":0%d";
+                    else tem+=":%d";
+                    if (result.get(TimeUnit.SECONDS)<10)tem+=":0%d";
+                    else tem+=":%d";
+
+                    String tempo= String.format(tem,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+                    Toast.makeText(this, "La carrera ha terminado: Distancia recorrida xxxx, tiempo:"+tempo, Toast.LENGTH_LONG).show();
                     btnSearch.show();
                     comenzar=false;
                 }
 
                 break;
         }
+    }
+
+    public static Map<TimeUnit,Long> computeDiff(Date date1, Date date2) {
+        long diffInMilliSeconds = date2.getTime() - date1.getTime();
+        List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
+        Collections.reverse(units);
+        Map<TimeUnit, Long> result = new LinkedHashMap<TimeUnit, Long>();
+        long milliSecondsRest = diffInMilliSeconds;
+        for (TimeUnit unit : units) {
+            long diff = unit.convert(milliSecondsRest, TimeUnit.MILLISECONDS);
+            long diffInMilliSecondsForUnit = unit.toMillis(diff);
+            milliSecondsRest = milliSecondsRest - diffInMilliSecondsForUnit;
+            result.put(unit, diff);
+        }
+        return result;
     }
 }

@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<gpx version="1.1" creator="OsmAnd" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <trk>
+    <trkseg>
+      <trkpt lat="-0.0767474" lon="-78.4616726">
+        <ele>2634</ele>
+        <time>2018-05-22T17:00:23Z</time>
+        <hdop>6.068</hdop>
+      </trkpt>
+      <trkpt lat="-0.0767474" lon="-78.4616725">
+        <ele>2634</ele>
+        <time>2018-05-22T17:00:29Z</time>
+        <hdop>4.551</hdop>
+      </trkpt>
+      <trkpt lat="-0.0767438" lon="-78.4617261">
+        <ele>2635</ele>
+        <time>2018-05-22T17:00:35Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.06</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0767368" lon="-78.4617738">
+        <ele>2633</ele>
+        <time>2018-05-22T17:00:40Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>0.9</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0767674" lon="-78.4617841">
+        <ele>2632</ele>
+        <time>2018-05-22T17:00:45Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.31</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0768186" lon="-78.4617681">
+        <ele>2629</ele>
+        <time>2018-05-22T17:00:51Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.09</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.076864" lon="-78.4617641">
+        <ele>2629</ele>
+        <time>2018-05-22T17:00:56Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.2</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0769196" lon="-78.4617596">
+        <ele>2628</ele>
+        <time>2018-05-22T17:01:02Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.16</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0769686" lon="-78.4617633">
+        <ele>2627</ele>
+        <time>2018-05-22T17:01:07Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.16</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0770185" lon="-78.4617583">
+        <ele>2625</ele>
+        <time>2018-05-22T17:01:13Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>0.93</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0770105" lon="-78.4616905">
+        <ele>2624</ele>
+        <time>2018-05-22T17:01:19Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.35</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0770068" lon="-78.461628">
+        <ele>2625</ele>
+        <time>2018-05-22T17:01:24Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.13</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0770031" lon="-78.4615738">
+        <ele>2624</ele>
+        <time>2018-05-22T17:01:29Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>0.96</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0769832" lon="-78.4615351">
+        <ele>2624</ele>
+        <time>2018-05-22T17:01:35Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.08</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0769306" lon="-78.4615406">
+        <ele>2625</ele>
+        <time>2018-05-22T17:01:40Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>0.9</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0768752" lon="-78.4615378">
+        <ele>2623</ele>
+        <time>2018-05-22T17:01:45Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.14</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0768046" lon="-78.4615348">
+        <ele>2623</ele>
+        <time>2018-05-22T17:01:51Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.3</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0767502" lon="-78.4615286">
+        <ele>2624</ele>
+        <time>2018-05-22T17:01:56Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.24</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0766979" lon="-78.4615497">
+        <ele>2624</ele>
+        <time>2018-05-22T17:02:02Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.24</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0766996" lon="-78.4616327">
+        <ele>2626</ele>
+        <time>2018-05-22T17:02:08Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>1.24</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0767022" lon="-78.4616676">
+        <ele>2626</ele>
+        <time>2018-05-22T17:02:13Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>0.44</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0767087" lon="-78.4617232">
+        <ele>2627</ele>
+        <time>2018-05-22T17:02:19Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>0.97</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0767127" lon="-78.4617816">
+        <ele>2628</ele>
+        <time>2018-05-22T17:02:25Z</time>
+        <hdop>4.551</hdop>
+        <extensions>
+          <speed>0.51</speed>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-0.0767144" lon="-78.4617847">
+        <ele>2628</ele>
+        <time>2018-05-22T17:02:30Z</time>
+        <hdop>4.551</hdop>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
