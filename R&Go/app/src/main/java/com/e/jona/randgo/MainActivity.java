@@ -473,11 +473,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
                     else{
                         toSpeech.speak("La carrera comienza en 3",TextToSpeech.QUEUE_FLUSH,null);
-                        toSpeech.playSilence(500,TextToSpeech.QUEUE_ADD,null);
+                        toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
                         toSpeech.speak("2",TextToSpeech.QUEUE_ADD,null);
-                        toSpeech.playSilence(500,TextToSpeech.QUEUE_ADD,null);
+                        toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
                         toSpeech.speak("1",TextToSpeech.QUEUE_ADD,null);
-                        toSpeech.playSilence(500,TextToSpeech.QUEUE_ADD,null);
+                        toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
                         toSpeech.speak("Ahora",TextToSpeech.QUEUE_ADD,null);
                     }
 
