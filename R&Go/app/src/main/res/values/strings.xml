@@ -241,4 +241,5 @@
         <item>zoo|tourism=zoo</item>
     </string-array>
     <string name="title_activity_options">OptionsActivity</string>
+    <string name="title_activity_spalish">Spalish</string>
 </resources>

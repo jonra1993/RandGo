@@ -5,6 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhitett">#ffffff</color>
     <color name="colorGreen">#d260a73d</color>
+    <color name="colorPrimarylight">#d215263d</color>
+    <color name="colorBlack">#d2000000</color>
 
 
 </resources>

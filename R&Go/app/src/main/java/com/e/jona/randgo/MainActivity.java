@@ -139,10 +139,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //pid.setSetpoint((double)lo.bearingTo(dest));
         pid.setSetpoint(0);
         pid.setOutputFilter(0.1);
-        volumen_normal=0.3f;
-        mp=MediaPlayer.create(this,R.raw.cascada);
+        volumen_normal=0.2f;
+        mp=MediaPlayer.create(this,R.raw.exercise);
         mp.setLooping(true);
-
 
 
         map = (MapView) findViewById(R.id.map);
@@ -213,13 +212,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 float copy=bearing;
                 if(copy!=500&&comenzar==true)
                 {
+                    if(copy>180) copy=copy-360;
                     double ley=pid.getOutput((double) copy);
                     float error= (float) pid.getError();
                     Log.d("Ley de control", String.valueOf(ley));
-                    float[] temp = funcion_sonido_pid((float) ley, volumen_normal * 100,error, -20,20);
-                    Log.d("Volumen l", String.valueOf(temp[0]));
-                    Log.d("Volumen r", String.valueOf(temp[1]));
-                    mp.setVolume(temp[0], temp[1]);
+                    float[] temp = funcion_sonido_pid((float) ley, volumen_normal * 100,error, -5,5);
+                    Log.d("Volumen r", String.valueOf(temp[0]));
+                    Log.d("Volumen l", String.valueOf(temp[1]));
+                    mp.setVolume(temp[1], temp[0]);
                 }
 
                 else{
@@ -474,6 +474,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             startActivityForResult(Intent.createChooser(target,"Seleccionar archivo"),PICKER);
         }catch (android.content.ActivityNotFoundException ex){
             Toast.makeText(this, "Instale un administrador de archivos.", Toast.LENGTH_SHORT);
+
+
         }
     }
 
@@ -618,5 +620,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             toSpeech.stop();
             toSpeech.shutdown();
         }
+
+        mp.stop();
     }
 }
