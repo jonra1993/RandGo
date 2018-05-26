@@ -22,6 +22,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private float direction;
     long millis_before, millis_after, millis, elapsed;
     Date startDateTime, endDateTime;
+    TextToSpeech toSpeech;
+    int resultt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +185,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         };
         myTimer.scheduleAtFixedRate(t,0,1000);
+
+        toSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+
+                if(status==TextToSpeech.SUCCESS)
+                {
+                    Locale locSpanish = new Locale("spa", "ECU");
+                    //result=toSpeech.setLanguage(Locale.UK);
+                    resultt=toSpeech.setLanguage(locSpanish);
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"Caracteritica no soportada",Toast.LENGTH_SHORT).show();
+
+
+                }
+            }
+        });
     }
 
 
@@ -445,17 +467,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 break;*/
             case R.id.btnNavigation:
                 if(comenzar==false){
-                    millis_before = System.currentTimeMillis();
-                    startDateTime = new Date(millis_before);
-                    Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
+
                     btnSearch.hide();
                     comenzar=true;
+                    if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
+                    else{
+                        toSpeech.speak("La carrera comienza en 3",TextToSpeech.QUEUE_FLUSH,null);
+                        toSpeech.playSilence(500,TextToSpeech.QUEUE_ADD,null);
+                        toSpeech.speak("2",TextToSpeech.QUEUE_ADD,null);
+                        toSpeech.playSilence(500,TextToSpeech.QUEUE_ADD,null);
+                        toSpeech.speak("1",TextToSpeech.QUEUE_ADD,null);
+                        toSpeech.playSilence(500,TextToSpeech.QUEUE_ADD,null);
+                        toSpeech.speak("Ahora",TextToSpeech.QUEUE_ADD,null);
+                    }
+
+                    Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
+                    millis_before = System.currentTimeMillis();
+                    startDateTime = new Date(millis_before);
                 }
                 else{
                     millis_after = System.currentTimeMillis();
                     endDateTime = new Date(millis_after);
                     Map<TimeUnit,Long> result = computeDiff(startDateTime, endDateTime);
-                    String tem=null;
+                    String tem;
+                    String tem2="La carrera ha terminado. Distancia recorrida %d kilómetros en %d horas, %d minutos y %d segundos";
                     if (result.get(TimeUnit.HOURS)<10) tem="0%d";
                     else tem="%d";
                     if (result.get(TimeUnit.MINUTES)<10)tem+=":0%d";
@@ -464,7 +499,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     else tem+=":%d";
 
                     String tempo= String.format(tem,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+                    String tempo2= String.format(tem2,10,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+
                     Toast.makeText(this, "La carrera ha terminado: Distancia recorrida xxxx, tiempo:"+tempo, Toast.LENGTH_LONG).show();
+
+                    if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
+                    else toSpeech.speak(tempo2,TextToSpeech.QUEUE_FLUSH,null);
+
                     btnSearch.show();
                     comenzar=false;
                 }
@@ -486,5 +527,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             result.put(unit, diff);
         }
         return result;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (toSpeech!=null)
+        {
+            toSpeech.stop();
+            toSpeech.shutdown();
+        }
     }
 }
