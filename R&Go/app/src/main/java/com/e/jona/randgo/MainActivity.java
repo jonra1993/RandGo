@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -29,6 +30,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -89,6 +91,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     Date startDateTime, endDateTime;
     TextToSpeech toSpeech;
     int resultt;
+    float bearing=500;
+
+    MediaPlayer mp;
+    float volumen_normal;
+    PID pid;
+    static Location lo=null;
+    static Location dest=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +132,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         btnNavigation=findViewById(R.id.btnNavigation);
         btnNavigation.setOnClickListener(this);
         btnNavigation.hide();
+
+        //inicialización del PID
+        pid = new PID(1,0,0);
+        pid.setOutputLimits(-100,100);
+        //pid.setSetpoint((double)lo.bearingTo(dest));
+        pid.setSetpoint(0);
+        pid.setOutputFilter(0.1);
+        volumen_normal=0.3f;
+        mp=MediaPlayer.create(this,R.raw.cascada);
+        mp.setLooping(true);
+
+
 
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -185,6 +206,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         };
         myTimer.scheduleAtFixedRate(t,0,1000);
+
+        TimerTask tt = new TimerTask() {
+            @Override
+            public void run() {
+                float copy=bearing;
+                if(copy!=500&&comenzar==true)
+                {
+                    double ley=pid.getOutput((double) copy);
+                    float error= (float) pid.getError();
+                    Log.d("Ley de control", String.valueOf(ley));
+                    float[] temp = funcion_sonido_pid((float) ley, volumen_normal * 100,error, -20,20);
+                    Log.d("Volumen l", String.valueOf(temp[0]));
+                    Log.d("Volumen r", String.valueOf(temp[1]));
+                    mp.setVolume(temp[0], temp[1]);
+                }
+
+                else{
+                    mp.setVolume((float)0.0, (float)0.0);
+                }
+            }
+        };
+        myTimer = new Timer();
+        myTimer.scheduleAtFixedRate(tt,0,200);
 
         toSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
             @Override
@@ -259,6 +303,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (on==0){
             updateLocation(location);
             on=1;
+        }
+        if (location.hasBearing()){
+            //distanceInMeters += location.distanceTo(lastLocation);
+            //lastLocation=location;
+            bearing = location.getBearing();
+        }
+        else{
+            bearing=500;
         }
 
     }
@@ -469,7 +521,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 if(comenzar==false){
 
                     btnSearch.hide();
-                    comenzar=true;
                     if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
                     else{
                         toSpeech.speak("La carrera comienza en 3",TextToSpeech.QUEUE_FLUSH,null);
@@ -484,8 +535,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
                     millis_before = System.currentTimeMillis();
                     startDateTime = new Date(millis_before);
+                    mp.start();
+                    comenzar=true;
+
                 }
                 else{
+                    mp.pause();
                     millis_after = System.currentTimeMillis();
                     endDateTime = new Date(millis_after);
                     Map<TimeUnit,Long> result = computeDiff(startDateTime, endDateTime);
@@ -527,6 +582,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             result.put(unit, diff);
         }
         return result;
+    }
+
+    public  static  float[] funcion_sonido_pid(float ley, float maxV,float error, float hi, float hd)
+    {
+        float r;
+        float l;
+        if (error<hi||error>hd)
+        {
+            r = maxV - ley;
+            if (r >= 100) r = 100;
+            else if (r < 0) r = 0;
+
+            l = maxV + ley;
+            if (l >= 100) l = 100;
+            else if (l < 0) l = 0;
+        }
+        else
+        {
+            r=maxV;
+            l=maxV;
+        }
+
+        r= (float) (r/100.0);
+        l= (float) (l/100.0);
+
+        return new float[] {l,r};
     }
 
     @Override
