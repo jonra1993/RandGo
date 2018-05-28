@@ -74,6 +74,7 @@ import java.util.*;
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, GPXListeners.GPXParserListener, GPXListeners.GPXParserProgressListener  {
 
     int on=0;
+    int branch=0;
     boolean comenzar=false;
     private Timer myTimer;
     MapView map = null;
