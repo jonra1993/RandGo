@@ -31,6 +31,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     MyLocationNewOverlay mLocationOverlay;
     public CompassOverlay compassOverlay;
     private Location location;
-    FloatingActionButton btnMyLocation,btnLayers,btnSearch,btnNavigation;
+    FloatingActionButton btnMyLocation,btnNavigation;
     private Uri gpxURI;
     private GPXParser mParser;
     private static final int PICKER=1;
@@ -125,10 +127,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //conectar layout
         btnMyLocation = findViewById(R.id.btnMyLocation);
         btnMyLocation.setOnClickListener(this);
-        //btnLayers=findViewById(R.id.btnLayer);
-        //btnLayers.setOnClickListener(this);
-        btnSearch=findViewById(R.id.btnSearch);
-        btnSearch.setOnClickListener(this);
         btnNavigation=findViewById(R.id.btnNavigation);
         btnNavigation.setOnClickListener(this);
         btnNavigation.hide();
@@ -228,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         };
         myTimer = new Timer();
-        myTimer.scheduleAtFixedRate(tt,0,200);
+        myTimer.scheduleAtFixedRate(tt,0,50);
 
         toSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
             @Override
@@ -251,6 +249,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mymenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.item1){
+            if(comenzar==false){
+                Intent intent = new Intent(MainActivity.this,OptionsActivity.class);
+                startActivity(intent);
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void onResume(){
         super.onResume();
@@ -512,17 +528,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
 
                 break;
-            case R.id.btnSearch:
-                Intent intent = new Intent(MainActivity.this,OptionsActivity.class);
-                startActivity(intent);
-                break;
-           /* case R.id.btnLayer:
 
-                break;*/
             case R.id.btnNavigation:
                 if(comenzar==false){
 
-                    btnSearch.hide();
                     if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
                     else{
                         toSpeech.speak("La carrera comienza en 3",TextToSpeech.QUEUE_FLUSH,null);
@@ -563,7 +572,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
                     else toSpeech.speak(tempo2,TextToSpeech.QUEUE_FLUSH,null);
 
-                    btnSearch.show();
                     comenzar=false;
                 }
 

@@ -25,7 +25,10 @@
         </activity>
         <activity
             android:name=".OptionsActivity"
-            android:screenOrientation="portrait"></activity>
+            android:theme="@style/menu2theme"
+            android:label="Configuración"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".Spalish"
             android:theme="@style/AppTheme.NoActionBar"
