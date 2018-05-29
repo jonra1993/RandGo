@@ -22,6 +22,12 @@
 
     </style>
 
+    <!--Estilo de ventana inicial. -->
+    <style name="Run_Theme" parent="Theme.AppCompat.Light.NoActionBar">
+       <item name="WindowsActionBar">false</item> 
+        <item name="WindowsNoTittle">true</item>
+    </style>
+
 
 
 </resources>

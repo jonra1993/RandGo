@@ -8,5 +8,15 @@
     <color name="colorPrimarylight">#d215263d</color>
     <color name="colorBlack">#d2000000</color>
 
+    <!-- Colores de ventna de inicio-->
+    <color name="colorIniPrimario">#23A7D8</color>
+    <color name="colorIniPrimarioDark">#23A7D8</color>
+    <color name="colorIniAccent">#FFFFFF</color>
+    <color name="colorIniWhite">#ffffff</color>
+    <color name="colorIniTransparent">#FFFFFF</color>
+    <color name="colorIniGradientStart">#19AA8B</color>
+    <color name="colorIniGradientEnd">#23A7D8</color>
+
+
 
 </resources>
