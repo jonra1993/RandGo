@@ -74,8 +74,9 @@ import java.util.*;
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, GPXListeners.GPXParserListener, GPXListeners.GPXParserProgressListener  {
 
     int on=0;
+    int diego=0;
     boolean comenzar=false;
-    private Timer myTimer;
+    private Timer myTimer, myTimer2;
     MapView map = null;
     IMapController mapController;
     LocationManager locationManager;
@@ -225,8 +226,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
             }
         };
-        myTimer = new Timer();
-        myTimer.scheduleAtFixedRate(tt,0,50);
+        myTimer2 = new Timer();
+        myTimer2.scheduleAtFixedRate(tt,0,50);
 
         toSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
             @Override
@@ -508,7 +509,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         InputStream in = getContentResolver().openInputStream(gpxURI);
                         mParser = new GPXParser(this, this);
                         mParser.parse(in);
-                        btnNavigation.show();
                     } catch (FileNotFoundException e) {
                         Toast.makeText(this, "IOExeption opening file", Toast.LENGTH_SHORT).show();
                     }

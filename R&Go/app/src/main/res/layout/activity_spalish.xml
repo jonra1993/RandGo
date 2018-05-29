@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
         <ImageView
             android:id="@+id/iv"
             android:src="@drawable/logo"
