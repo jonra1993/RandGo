@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     int on=0;
     int diego=0;
+    int diego2=2;
     boolean comenzar=false;
     private Timer myTimer, myTimer2;
     MapView map = null;
