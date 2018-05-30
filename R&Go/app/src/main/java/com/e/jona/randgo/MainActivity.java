@@ -74,8 +74,6 @@ import java.util.*;
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, GPXListeners.GPXParserListener, GPXListeners.GPXParserProgressListener  {
 
     int on=0;
-    int diego=0;
-    int diego2=2;
     boolean comenzar=false;
     private Timer myTimer, myTimer2;
     MapView map = null;
@@ -96,6 +94,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     TextToSpeech toSpeech;
     int resultt;
     float bearing=500;
+
+    //Medicion de distancia
+    double lat_inicial, lon_inicial, lat_actual, lon_actual, lat_ant, lon_ant;
+    float dist = 0;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
+    private static final long MIN_TIME_BW_UPDATES = 300;
 
     MediaPlayer mp;
     float volumen_normal;
@@ -354,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Toast.makeText(getBaseContext(),locGeoPoint.getLatitude() + " - "+locGeoPoint.getLongitude(),Toast.LENGTH_SHORT).show();
         map.invalidate();
         if (location.hasBearing()==true) {
+            calculo_distancia(location);
             direction=location.getBearing();
             Toast.makeText(getBaseContext(),""+direction+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
         } else {
@@ -362,13 +367,43 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
+    private void calculo_distancia (Location location){
+        lat_actual = location.getLatitude();
+        lon_actual = location.getLongitude();
+
+        float[] results = new float[1];
+        Location.distanceBetween(lat_ant, lon_ant, lat_actual, lon_actual, results);
+        //etLocation.setText(" "+results[0]);
+
+        if (location.getAccuracy()<=5 && results[0]<=10){
+            Location.distanceBetween(lat_ant, lon_ant, lat_actual, lon_actual, results);
+            //etLocation.setText(" "+results[0]);
+            dist = dist + results[0];
+            //etDistancia.setText(String.format("%1$s [m]", dist));
+            Toast.makeText(this, "Distancia recorrida: "+dist, Toast.LENGTH_SHORT).show();
+        }
+
+        lat_ant = lat_actual;
+        lon_ant = lon_actual;
+
+        switch ((int)dist){
+            case 100:
+                toSpeech.speak("Usted a recorrido 100 metros",TextToSpeech.QUEUE_FLUSH,null);
+                break;
+            case 200:
+                toSpeech.speak("Usted a recorrido 200 metros",TextToSpeech.QUEUE_FLUSH,null);
+                break;
+        }
+
+    }
+
     private void requestMyLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
+        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
     }
 
     public void onPause(){
@@ -566,9 +601,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     else tem+=":%d";
 
                     String tempo= String.format(tem,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
-                    String tempo2= String.format(tem2,10,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+                    String tempo2= String.format(tem2,(int)dist,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
 
                     Toast.makeText(this, "La carrera ha terminado: Distancia recorrida xxxx, tiempo:"+tempo, Toast.LENGTH_LONG).show();
+                    dist=0;
 
                     if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
                     else toSpeech.speak(tempo2,TextToSpeech.QUEUE_FLUSH,null);
