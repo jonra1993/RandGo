@@ -41,7 +41,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 DataHolder.setData("Carolina");
                 break;
             case R.id.b_estadiox:
-                DataHolder.setData("Estadiox");
+                DataHolder.setData("CanchaEPN");
                 break;
             case R.id.b_estadioy:
                 DataHolder.setData("Estadioy");
