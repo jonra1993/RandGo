@@ -4,35 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:theme="@style/AppTheme.NoActionBar"
     tools:context=".Spalish"
     android:background="@drawable/grad_big">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
         android:layout_centerInParent="true">
         
         <ImageView
             android:id="@+id/img_corredores"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:src="@drawable/portada_corredores"
             android:adjustViewBounds="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/marco"
+            android:backgroundTint="@color/colorIniWhite"
             android:scaleType="fitCenter"/>
 
         <RelativeLayout
             android:id="@+id/relat1"
             android:layout_below="@+id/img_corredores"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
             <TextView
                 android:id="@+id/tvInicio"
                 android:layout_marginTop="30dp"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ventana de Bienvenida R&amp;Go"
-                android:textSize="30dp"
+                android:layout_height="100dp"
+                android:text="R&amp;Go"
+                android:textSize="50dp"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
@@ -40,9 +49,6 @@
 
         </RelativeLayout>
     </RelativeLayout>
-
-
-
 </RelativeLayout>
 
 <!--

@@ -13,7 +13,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher2"
         android:label="@string/nombre"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -21,7 +21,8 @@
         tools:replace="android:label">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/theme_home">
         </activity>
         <activity
             android:name=".OptionsActivity"
