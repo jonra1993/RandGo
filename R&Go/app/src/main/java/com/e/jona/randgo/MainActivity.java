@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codebutchery.androidgpx.data.GPXDocument;
@@ -107,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static Location lo=null;
     static Location dest=null;
 
+    TextView tvDistancia;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +139,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         btnNavigation=findViewById(R.id.btnNavigation);
         btnNavigation.setOnClickListener(this);
         btnNavigation.hide();
+
+        tvDistancia= findViewById(R.id.tvDistancia);
+
 
         //inicialización del PID
         pid = new PID(1,0,0);
@@ -327,8 +333,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             on=1;
         }
         if (location.hasBearing()){
-            //distanceInMeters += location.distanceTo(lastLocation);
-            //lastLocation=location;
+            calculo_distancia(location);
             bearing = location.getBearing();
         }
         else{
@@ -358,7 +363,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Toast.makeText(getBaseContext(),locGeoPoint.getLatitude() + " - "+locGeoPoint.getLongitude(),Toast.LENGTH_SHORT).show();
         map.invalidate();
         if (location.hasBearing()==true) {
-            calculo_distancia(location);
             direction=location.getBearing();
             Toast.makeText(getBaseContext(),""+direction+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
         } else {
@@ -371,30 +375,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         lat_actual = location.getLatitude();
         lon_actual = location.getLongitude();
 
-        float[] results = new float[1];
-        Location.distanceBetween(lat_ant, lon_ant, lat_actual, lon_actual, results);
-        //etLocation.setText(" "+results[0]);
-
-        if (location.getAccuracy()<=5 && results[0]<=10){
+        if(comenzar==true){
+            float[] results = new float[1];
             Location.distanceBetween(lat_ant, lon_ant, lat_actual, lon_actual, results);
             //etLocation.setText(" "+results[0]);
-            dist = dist + results[0];
-            //etDistancia.setText(String.format("%1$s [m]", dist));
-            Toast.makeText(this, "Distancia recorrida: "+dist, Toast.LENGTH_SHORT).show();
-        }
 
-        lat_ant = lat_actual;
-        lon_ant = lon_actual;
+            if (location.getAccuracy()<=5 && results[0]<=10){
+                Location.distanceBetween(lat_ant, lon_ant, lat_actual, lon_actual, results);
+                //etLocation.setText(" "+results[0]);
+                dist = dist + results[0];
+                //etDistancia.setText(String.format("%1$s [m]", dist));
+                tvDistancia.setText("Distancia: "+dist);
+            }
 
-        switch ((int)dist){
-            case 100:
+            lat_ant = lat_actual;
+            lon_ant = lon_actual;
+
+            if (dist>=100 && dist<=102){
                 toSpeech.speak("Usted a recorrido 100 metros",TextToSpeech.QUEUE_FLUSH,null);
-                break;
-            case 200:
+            }
+            else if (dist>=200 && dist<=202){
                 toSpeech.speak("Usted a recorrido 200 metros",TextToSpeech.QUEUE_FLUSH,null);
-                break;
-        }
+            }
 
+        }
     }
 
     private void requestMyLocation() {
