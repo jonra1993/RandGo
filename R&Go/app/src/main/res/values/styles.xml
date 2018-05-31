@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Base application theme. -->
@@ -9,27 +10,17 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="menu2theme" parent="AppTheme"/>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="menu2theme" parent="AppTheme">
-
+    <style name="Tema_inicio" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorIniGradientStart</item>
+        <item name="colorPrimaryDark">@color/colorIniGradientEnd</item>
+        <item name="colorAccent">@color/colorIniGradientEnd</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
-
-    <style name="theme_home" parent="Theme.AppCompat.NoActionBar" />
-
-    <!--Estilo de ventana inicial.
-    <style name="Run_Theme" parent="Theme.AppCompat.Light.NoActionBar">
-       <item name="WindowsActionBar">false</item> 
-        <item name="WindowsNoTittle">true</item>
-    </style> -->
-
-
-
 </resources>

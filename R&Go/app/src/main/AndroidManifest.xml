@@ -22,11 +22,11 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/theme_home">
+            android:theme="@style/Tema_inicio">
         </activity>
         <activity
             android:name=".OptionsActivity"
-            android:theme="@style/menu2theme"
+            android:theme="@style/Tema_inicio"
             android:label="Configuración"
             android:screenOrientation="portrait">
         </activity>

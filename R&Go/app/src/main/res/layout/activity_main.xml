@@ -17,7 +17,6 @@
 
     <org.osmdroid.views.MapView
         android:id="@+id/map"
-        android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 
@@ -29,7 +28,7 @@
         android:layout_margin="10sp"
         android:gravity="center_horizontal"
         android:src="@drawable/ic_location_searching_white_24dp"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorIniGradientEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -42,7 +41,7 @@
         android:layout_margin="10sp"
         android:src="@drawable/ic_navigation"
         android:id="@+id/btnNavigation"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorIniGradientEnd"
         />
 
 
