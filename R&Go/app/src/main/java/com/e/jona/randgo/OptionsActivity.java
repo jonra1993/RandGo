@@ -9,11 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.e.jona.randgo.DataHolder;
 
 import java.util.Locale;
+
+import static com.e.jona.randgo.DataHolder.getData_Audio;
+import static com.e.jona.randgo.DataHolder.setData_Audio;
 
 public class OptionsActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -21,16 +25,18 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
     TextToSpeech toSpeech;
     int resultt;
     boolean [] mem;
+    private CheckBox checkbox1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
-        mem= new boolean[3];
+        mem= new boolean[4];
         mem[0]=false;
         mem[1]=false;
         mem[2]=false;
+        mem[3]=false;
         b_cargar_gpx=findViewById(R.id.b_cargar_gpx);
         b_cargar_gpx.setOnClickListener(this);
         b_carolina=findViewById(R.id.b_carolina);
@@ -39,6 +45,11 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         b_estadiox.setOnClickListener(this);
         b_estadioy=findViewById(R.id.b_estadioy);
         b_estadioy.setOnClickListener(this);
+
+        checkbox1=(CheckBox)findViewById(R.id.checkbox_audio);
+        if(getData_Audio()) checkbox1.setChecked(true);
+        else checkbox1.setChecked(false);
+
 
         toSpeech = new TextToSpeech(OptionsActivity.this, new TextToSpeech.OnInitListener() {
             @Override
@@ -75,11 +86,14 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 if(mem[0]==true){
                     this.finish();
                     toSpeech.speak(getString(R.string.tit2)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
+                    if (checkbox1.isChecked()==true) setData_Audio(true);
+                    else setData_Audio(false);
                     break;
                 }
                 mem[0]=true;
                 mem[1]=false;
                 mem[2]=false;
+                mem[3]=false;
                 toSpeech.speak(getString(R.string.tit2),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_estadiox:
@@ -87,11 +101,14 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 if(mem[1]==true){
                     this.finish();
                     toSpeech.speak(getString(R.string.tit3)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
+                    if (checkbox1.isChecked()==true) setData_Audio(true);
+                    else setData_Audio(false);
                     break;
                 }
                 mem[0]=false;
                 mem[1]=true;
                 mem[2]=false;
+                mem[3]=false;
                 toSpeech.speak(getString(R.string.tit3),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_estadioy:
@@ -99,11 +116,14 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 if(mem[2]==true){
                     this.finish();
                     toSpeech.speak(getString(R.string.tit4)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
+                    if (checkbox1.isChecked()==true) setData_Audio(true);
+                    else setData_Audio(false);
                     break;
                 }
                 mem[0]=false;
                 mem[1]=false;
                 mem[2]=true;
+                mem[3]=false;
                 toSpeech.speak(getString(R.string.tit4),TextToSpeech.QUEUE_FLUSH,null);
                 break;
         }
@@ -120,7 +140,21 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.item2){
-            this.finish();
+            if(mem[3]==false){
+                toSpeech.speak("Regresar a la ventana principal",TextToSpeech.QUEUE_FLUSH,null);
+                mem[3]=true;
+                mem[0]=false;
+                mem[1]=false;
+                mem[2]=false;
+            }
+            else{
+                this.finish();
+                mem[3]=false;
+                mem[0]=false;
+                mem[1]=false;
+                mem[2]=false;
+
+            }
         }
         return super.onOptionsItemSelected(item);
     }

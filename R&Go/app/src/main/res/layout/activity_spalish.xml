@@ -30,7 +30,7 @@
         <RelativeLayout
             android:id="@+id/relat1"
             android:layout_below="@+id/img_corredores"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone">
 
@@ -38,7 +38,7 @@
                 android:id="@+id/tvInicio"
                 android:layout_marginTop="30dp"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:text="R&amp;Go"
                 android:textSize="50dp"
