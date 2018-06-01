@@ -72,6 +72,9 @@ import com.e.jona.randgo.DataHolder;
 import java.util.concurrent.TimeUnit;
 import java.util.*;
 
+import static com.e.jona.randgo.DataHolder.getData_Audio;
+import static com.e.jona.randgo.DataHolder.setData_Audio;
+
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, GPXListeners.GPXParserListener, GPXListeners.GPXParserProgressListener  {
 
     int on=0;
@@ -110,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static Location dest=null;
 
     TextView tvDistancia;
+    boolean [] mem;
+    boolean me2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +145,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         btnNavigation=findViewById(R.id.btnNavigation);
         btnNavigation.setOnClickListener(this);
         btnNavigation.hide();
+        mem= new boolean[3];
+        mem[0]=false;mem[1]=false;
+        me2=false;
+
+        setData_Audio(true);
+
 
         tvDistancia= findViewById(R.id.tvDistancia);
 
@@ -221,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             @Override
             public void run() {
                 float copy=bearing;
-                if(copy!=500&&comenzar==true)
+                if(copy!=500&&comenzar==true&&getData_Audio())
                 {
                     if(copy>180) copy=copy-360;
                     double ley=pid.getOutput((double) copy);
@@ -273,10 +284,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         int id = item.getItemId();
         if(id == R.id.item1){
             if(comenzar==false){
-                Intent intent = new Intent(MainActivity.this,OptionsActivity.class);
-                startActivity(intent);
-            }
+                if(me2==true){
+                    Intent intent = new Intent(MainActivity.this,OptionsActivity.class);
+                    startActivity(intent);
+                    me2=false;
+                }
+                else{
+                    toSpeech.speak("Menú de Opciones",TextToSpeech.QUEUE_FLUSH,null);
+                    me2=true;
+                }
 
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -573,56 +591,82 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 if(location!=null){
                     //Location lastFix=mLocationOverlay.getLastFix();
                     updateLocation(location);
+                    toSpeech.speak("Actualizando mí ubicación",TextToSpeech.QUEUE_FLUSH,null);
+                    mem[0]=false;mem[1]=false;
+                    me2=false;
+
                 }
 
                 break;
 
             case R.id.btnNavigation:
                 if(comenzar==false){
+                    if(mem[0]==false){
+                        toSpeech.speak("Botón de inicio de carrera",TextToSpeech.QUEUE_FLUSH,null);
+                        mem[0]=true;mem[1]=false;
+                        me2=false;
 
-                    if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
-                    else{
-                        toSpeech.speak("La carrera comienza en 3",TextToSpeech.QUEUE_FLUSH,null);
-                        toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
-                        toSpeech.speak("2",TextToSpeech.QUEUE_ADD,null);
-                        toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
-                        toSpeech.speak("1",TextToSpeech.QUEUE_ADD,null);
-                        toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
-                        toSpeech.speak("Ahora",TextToSpeech.QUEUE_ADD,null);
                     }
+                    else{
+                        mem[0]=false;mem[1]=false;
+                        me2=false;
 
-                    Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
-                    millis_before = System.currentTimeMillis();
-                    startDateTime = new Date(millis_before);
-                    mp.start();
-                    comenzar=true;
+                        if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
+                        else{
+                            toSpeech.speak("La carrera comienza en 3",TextToSpeech.QUEUE_FLUSH,null);
+                            toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
+                            toSpeech.speak("2",TextToSpeech.QUEUE_ADD,null);
+                            toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
+                            toSpeech.speak("1",TextToSpeech.QUEUE_ADD,null);
+                            toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
+                            toSpeech.speak("Ahora",TextToSpeech.QUEUE_ADD,null);
+                        }
 
+                        Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
+                        millis_before = System.currentTimeMillis();
+                        startDateTime = new Date(millis_before);
+                        mp.start();
+                        comenzar=true;
+
+                    }
                 }
                 else{
-                    mp.pause();
-                    millis_after = System.currentTimeMillis();
-                    endDateTime = new Date(millis_after);
-                    Map<TimeUnit,Long> result = computeDiff(startDateTime, endDateTime);
-                    String tem;
-                    String tem2="La carrera ha terminado. Distancia recorrida %.2f kilómetros en %d horas, %d minutos y %d segundos";
-                    if (result.get(TimeUnit.HOURS)<10) tem="0%d";
-                    else tem="%d";
-                    if (result.get(TimeUnit.MINUTES)<10)tem+=":0%d";
-                    else tem+=":%d";
-                    if (result.get(TimeUnit.SECONDS)<10)tem+=":0%d";
-                    else tem+=":%d";
+                    if(mem[1]==false){
+                        toSpeech.speak("Botón de finalización de carrera",TextToSpeech.QUEUE_FLUSH,null);
+                        mem[0]=false;mem[1]=true;
+                        me2=false;
 
-                    String tempo= String.format(tem,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
-                    String tempo1= String.format("La carrera ha terminado: Distancia recorrida %.2f km, Tiempo:", dist/1000);
-                    String tempo2= String.format(tem2,dist/1000,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+                    }
+                    else{
+                        mem[0]=false;mem[1]=false;
+                        me2=false;
+                        mp.pause();
+                        millis_after = System.currentTimeMillis();
+                        endDateTime = new Date(millis_after);
+                        Map<TimeUnit,Long> result = computeDiff(startDateTime, endDateTime);
+                        String tem;
+                        String tem2="La carrera ha terminado. Distancia recorrida %.2f kilómetros en %d horas, %d minutos y %d segundos";
+                        if (result.get(TimeUnit.HOURS)<10) tem="0%d";
+                        else tem="%d";
+                        if (result.get(TimeUnit.MINUTES)<10)tem+=":0%d";
+                        else tem+=":%d";
+                        if (result.get(TimeUnit.SECONDS)<10)tem+=":0%d";
+                        else tem+=":%d";
 
-                    Toast.makeText(this, tempo1+tempo, Toast.LENGTH_LONG).show();
-                    dist=0;
+                        String tempo= String.format(tem,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+                        String tempo1= String.format("La carrera ha terminado: Distancia recorrida %.2f km, Tiempo:", dist/1000);
+                        String tempo2= String.format(tem2,dist/1000,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
 
-                    if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
-                    else toSpeech.speak(tempo2,TextToSpeech.QUEUE_FLUSH,null);
+                        Toast.makeText(this, tempo1+tempo, Toast.LENGTH_LONG).show();
+                        dist=0;
 
-                    comenzar=false;
+                        if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
+                        else toSpeech.speak(tempo2,TextToSpeech.QUEUE_FLUSH,null);
+
+                        comenzar=false;
+
+                    }
+
                 }
 
                 break;
