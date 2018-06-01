@@ -1,7 +1,7 @@
 <!--https://medium.com/@ali.muzaffar/understanding-vectordrawable-pathdata-commands-in-android-d56a6054610e-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
+    android:width="60dp"
+    android:height="60dp"
     android:viewportHeight="24.0"
     android:viewportWidth="24.0">
     <group android:name="background">
@@ -13,19 +13,19 @@
     <group android:name="check">
         <path
             android:name="tick1"
-            android:pathData="M7,6 l10,0 "
+            android:pathData="M7,2 l15,0 "
             android:strokeColor="#ffffff"
-            android:strokeWidth="2" />
+            android:strokeWidth="4" />
         <path
             android:name="tick1"
-            android:pathData="M7,12 l10,0 "
+            android:pathData="M7,10 l15,0 "
             android:strokeColor="#ffffff"
-            android:strokeWidth="2" />
+            android:strokeWidth="4" />
         <path
             android:name="tick1"
-            android:pathData="M7,18 l10,0 "
+            android:pathData="M7,18 l15,0 "
             android:strokeColor="#ffffff"
-            android:strokeWidth="2" />
+            android:strokeWidth="4" />
     </group>
 
 </vector>

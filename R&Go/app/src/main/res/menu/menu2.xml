@@ -4,6 +4,7 @@
     <item
         android:id="@+id/item2"
         android:title="item2"
+        android:orderInCategory="100"
         android:icon="@drawable/novo2"
         app:showAsAction="always" />
 </menu>
