@@ -49,6 +49,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     Locale locSpanish = new Locale("spa", "ECU");
                     //result=toSpeech.setLanguage(Locale.UK);
                     resultt=toSpeech.setLanguage(locSpanish);
+                    toSpeech.speak("Elija la pista que desee cargar",TextToSpeech.QUEUE_FLUSH,null);
                 }
                 else
                 {
@@ -58,6 +59,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 }
             }
         });
+
     }
 
 
@@ -70,27 +72,39 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.b_carolina:
                 DataHolder.setData("Carolina");
-                if(mem[0]==true) this.finish();
+                if(mem[0]==true){
+                    this.finish();
+                    toSpeech.speak(getString(R.string.tit2)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
+                    break;
+                }
                 mem[0]=true;
                 mem[1]=false;
                 mem[2]=false;
-                toSpeech.speak(String.valueOf(R.string.tit2),TextToSpeech.QUEUE_FLUSH,null);
+                toSpeech.speak(getString(R.string.tit2),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_estadiox:
                 DataHolder.setData("CanchaEPN");
-                if(mem[1]==true) this.finish();
+                if(mem[1]==true){
+                    this.finish();
+                    toSpeech.speak(getString(R.string.tit3)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
+                    break;
+                }
                 mem[0]=false;
                 mem[1]=true;
                 mem[2]=false;
-                toSpeech.speak(String.valueOf(R.string.tit3),TextToSpeech.QUEUE_FLUSH,null);
+                toSpeech.speak(getString(R.string.tit3),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_estadioy:
                 DataHolder.setData("Estadioy");
-                if(mem[2]==true) this.finish();
+                if(mem[2]==true){
+                    this.finish();
+                    toSpeech.speak(getString(R.string.tit4)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
+                    break;
+                }
                 mem[0]=false;
                 mem[1]=false;
                 mem[2]=true;
-                toSpeech.speak(String.valueOf(R.string.tit4),TextToSpeech.QUEUE_FLUSH,null);
+                toSpeech.speak(getString(R.string.tit4),TextToSpeech.QUEUE_FLUSH,null);
                 break;
         }
 
