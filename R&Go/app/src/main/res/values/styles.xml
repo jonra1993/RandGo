@@ -22,5 +22,6 @@
         <item name="colorPrimaryDark">@color/colorIniGradientEnd</item>
         <item name="colorAccent">@color/colorIniGradientEnd</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="actionBarSize">50dp</item>
     </style>
 </resources>
