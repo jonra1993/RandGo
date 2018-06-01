@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no" ?>
+<gpx creator="WTracks" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" version="1.1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<metadata>
+  <name>CanchaEPN</name>
+  <desc></desc>
+  <author><name>WTracks - Online GPX track editor</name></author>
+  <link href="https://wtracks.appspot.com/">
+    <text>WTracks</text>
+    <type>text/html</type>
+  </link>
+  <time>2018-05-30T18:54:53.694Z</time>
+<bounds minlat="-0.21247364474590777" minlon="-78.49097183750479" maxlat="-0.211121820638556" maxlon="-78.48732403324453"/></metadata>
+<trk><name>CanchaEPN</name><trkseg>
+  <trkpt lat="-0.2113789" lon="-78.4890646"><ele>2823</ele></trkpt>
+  <trkpt lat="-0.2113797" lon="-78.4890648"><ele>2823</ele></trkpt>
+  <trkpt lat="-0.2113798" lon="-78.48906490000002"><ele>2823</ele></trkpt>
+  <trkpt lat="-0.2114101" lon="-78.48909500000002"><ele>2824</ele></trkpt>
+  <trkpt lat="-0.211469" lon="-78.4891447"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2115522" lon="-78.48921059999998"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2116075" lon="-78.48925589999999"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2116581" lon="-78.48930469999999"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2117165" lon="-78.48935449999999"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2117963" lon="-78.48942199999999"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2118737" lon="-78.48948439999998"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.211923" lon="-78.48953879999999"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2119984" lon="-78.4896162"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2121043" lon="-78.48965859999998"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2122126" lon="-78.48967879999998"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2122992" lon="-78.48966589999998"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2124075" lon="-78.48963079999999"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2124681" lon="-78.48957300000001"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.212532" lon="-78.48947720000001"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2125658" lon="-78.48936860000003"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2125691" lon="-78.48928619999998"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2125601" lon="-78.48920120000002"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.212512" lon="-78.48910430000001"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2124574" lon="-78.48904290000002"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2123702" lon="-78.48897440000002"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2123113" lon="-78.48892419999999"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2122325" lon="-78.48884900000002"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2121555" lon="-78.48877419999997"><ele>2828</ele></trkpt>
+  <trkpt lat="-0.2120929" lon="-78.48872649999998"><ele>2829</ele></trkpt>
+  <trkpt lat="-0.2120141" lon="-78.48865599999999"><ele>2829</ele></trkpt>
+  <trkpt lat="-0.2119398" lon="-78.48858359999997"><ele>2829</ele></trkpt>
+  <trkpt lat="-0.2118839" lon="-78.4885284"><ele>2829</ele></trkpt>
+  <trkpt lat="-0.2118206" lon="-78.48848150000003"><ele>2829</ele></trkpt>
+  <trkpt lat="-0.2117229" lon="-78.48843829999998"><ele>2828</ele></trkpt>
+  <trkpt lat="-0.2116218" lon="-78.48842689999998"><ele>2828</ele></trkpt>
+  <trkpt lat="-0.2115494" lon="-78.4884472"><ele>2828</ele></trkpt>
+  <trkpt lat="-0.2114593" lon="-78.48848980000002"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2113996" lon="-78.4885385"><ele>2827</ele></trkpt>
+  <trkpt lat="-0.2113255" lon="-78.4886391"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2112943" lon="-78.48872790000001"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2112852" lon="-78.48879899999997"><ele>2825</ele></trkpt>
+  <trkpt lat="-0.2113067" lon="-78.4888987"><ele>2826</ele></trkpt>
+  <trkpt lat="-0.2113263" lon="-78.48899929999999"><ele>2826</ele></trkpt>
+</trkseg></trk></gpx>
