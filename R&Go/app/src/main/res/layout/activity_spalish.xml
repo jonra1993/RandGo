@@ -37,13 +37,12 @@
             <TextView
                 android:id="@+id/tvInicio"
                 android:layout_marginTop="30dp"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
                 android:text="R&amp;Go"
                 android:textSize="50dp"
                 android:textAlignment="center"
-                android:gravity="center_horizontal"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/colorIniWhite"/>

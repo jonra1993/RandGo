@@ -13,19 +13,19 @@
     <group android:name="check">
         <path
             android:name="tick1"
-            android:pathData="M7,6 l10,0 "
+            android:pathData="M7,2 l10,0 "
             android:strokeColor="#ffffff"
-            android:strokeWidth="2" />
+            android:strokeWidth="4" />
         <path
             android:name="tick1"
-            android:pathData="M7,12 l10,0 "
+            android:pathData="M7,10 l10,0 "
             android:strokeColor="#ffffff"
-            android:strokeWidth="2" />
+            android:strokeWidth="4" />
         <path
             android:name="tick1"
             android:pathData="M7,18 l10,0 "
             android:strokeColor="#ffffff"
-            android:strokeWidth="2" />
+            android:strokeWidth="4" />
     </group>
 
 </vector>
