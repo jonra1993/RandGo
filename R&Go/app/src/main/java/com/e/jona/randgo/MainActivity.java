@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     TextView tvDistancia, tvPresicionGPS;
     boolean [] mem;
     boolean me2;
+    private static int conta;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mem= new boolean[3];
         mem[0]=false;mem[1]=false;
         me2=false;
+
+        conta=0;
 
         setData_Audio(true);
 
@@ -412,20 +416,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             lat_ant = lat_actual;
             lon_ant = lon_actual;
 
-            if (dist>=100 && dist<=102){
-                verb_distancia(100);
+            if (dist>=(conta+1)*100){
+                verb_distancia((int)(conta+1)*100);
+                conta++;
             }
-            else if (dist>=200 && dist<=203){
-                verb_distancia(200);
-            }
-            else if (dist>=300 && dist<=303){
-                verb_distancia(300);
-            }
-            else if (dist>=400 && dist<=403){
-                verb_distancia(400);
-            }
-            else if (dist>=1000&& dist<=1005)
-                alarta_km(1);
         }
     }
 
@@ -657,6 +651,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         startDateTime = new Date(millis_before);
                         mp.start();
                         comenzar=true;
+                        conta=0;
 
                     }
                 }
@@ -694,6 +689,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         else toSpeech.speak(tempo2,TextToSpeech.QUEUE_FLUSH,null);
 
                         comenzar=false;
+                        conta=0;
 
                     }
 
