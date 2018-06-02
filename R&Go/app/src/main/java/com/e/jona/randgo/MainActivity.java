@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private ProgressDialog mProgressDialog = null;
     protected Polygon mDestinationPolygon;
     private float direction;
-    long millis_before, millis_after, millis, elapsed;
-    Date startDateTime, endDateTime;
+    long millis_before, millis_after, fin_km, inic_km, millis, elapsed;
+    Date startDateTime, endDateTime, finDate_km, inicDate_km;
     TextToSpeech toSpeech;
     int resultt;
     float bearing=500;
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static Location lo=null;
     static Location dest=null;
 
-    TextView tvDistancia;
+    TextView tvDistancia, tvPresicionGPS;
     boolean [] mem;
     boolean me2;
 
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
 
         tvDistancia= findViewById(R.id.tvDistancia);
+        tvPresicionGPS=findViewById(R.id.tvPresicionGPS);
 
 
         //inicialización del PID
@@ -346,6 +347,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
         //updateLocation(location);
+        tvPresicionGPS.setText("GPS: "+location.getAccuracy());
         this.location=location;
         if (on==0){
             updateLocation(location);
@@ -413,10 +415,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             if (dist>=100 && dist<=102){
                 verb_distancia(100);
             }
-            else if (dist>=200 && dist<=202){
+            else if (dist>=200 && dist<=203){
                 verb_distancia(200);
             }
-
+            else if (dist>=300 && dist<=303){
+                verb_distancia(300);
+            }
+            else if (dist>=400 && dist<=403){
+                verb_distancia(400);
+            }
+            else if (dist>=1000&& dist<=1005)
+                alarta_km(1);
         }
     }
 
@@ -424,6 +433,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         String tempo3= String.format("Usted a recorrido %d metros",val_distancia);
         toSpeech.speak(tempo3,TextToSpeech.QUEUE_FLUSH,null);
         toSpeech.playSilence(1000,TextToSpeech.QUEUE_ADD,null);
+    }
+
+    private void alarta_km (int d){
+        fin_km = System.currentTimeMillis();
+        finDate_km = new Date(fin_km);
+        inicDate_km= new Date(inic_km);
+        Map<TimeUnit,Long> result = computeDiff(inicDate_km, finDate_km);
+        String tem;
+        if (result.get(TimeUnit.MINUTES)<10)tem=":0%d";
+        else tem=":%d";
+        if (result.get(TimeUnit.SECONDS)<10)tem+=":0%d";
+        else tem+=":%d";
+
+        String tempo= String.format(tem,result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+        String tempo1= String.format("Usted a recorrido %d kilometro en %",d  );
+
+        toSpeech.speak(tempo1+tempo,TextToSpeech.QUEUE_FLUSH,null);
+        toSpeech.playSilence(1000,TextToSpeech.QUEUE_ADD,null);
+
+        inic_km=System.currentTimeMillis();
     }
 
 
@@ -624,6 +653,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
                         millis_before = System.currentTimeMillis();
+                        inic_km=millis_before;
                         startDateTime = new Date(millis_before);
                         mp.start();
                         comenzar=true;
