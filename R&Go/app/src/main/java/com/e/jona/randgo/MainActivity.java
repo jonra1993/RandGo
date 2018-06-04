@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         break;
                     case "Estadioy":
-                        cargargpx("pista_carolina.gpx");
+                        cargargpx("esmil2.gpx");
                         DataHolder.setData("NULL");
                         break;
                 }
