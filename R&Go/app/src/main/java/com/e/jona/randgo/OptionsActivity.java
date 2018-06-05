@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.e.jona.randgo.DataHolder;
 
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.e.jona.randgo.DataHolder.getData_Audio;
 import static com.e.jona.randgo.DataHolder.setData_Audio;
@@ -24,8 +26,10 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
     Button b_cargar_gpx,b_carolina,b_estadiox, b_estadioy;
     TextToSpeech toSpeech;
     int resultt;
-    boolean [] mem;
+    public boolean [] mem;
     private CheckBox checkbox1;
+    private Timer myTimer;
+    int tiempo=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +75,29 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
+        myTimer = new Timer();
+        TimerTask t = new TimerTask() {
+            @Override
+            public void run() {
+
+                tiempo++; if(tiempo>3){
+                    mem[3]=false;
+                    mem[0]=false;
+                    mem[1]=false;
+                    mem[2]=false;
+                    tiempo=0;
+                }
+
+            }
+        };
+        myTimer.scheduleAtFixedRate(t,0,1000);
+
     }
 
 
     @Override
     public void onClick(View view) {
+        tiempo=0;
         switch (view.getId())
         {
             case R.id.b_cargar_gpx:
@@ -140,6 +162,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.item2){
+            tiempo=0;
             if(mem[3]==false){
                 toSpeech.speak("Regresar a la ventana principal",TextToSpeech.QUEUE_FLUSH,null);
                 mem[3]=true;
