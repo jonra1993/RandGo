@@ -1,15 +1,21 @@
 package com.example.pc.seguim_bearing;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +36,6 @@ import com.codebutchery.androidgpx.data.GPXWayPoint;
 import com.codebutchery.androidgpx.xml.GPXListeners;
 import com.codebutchery.androidgpx.xml.GPXParser;
 
-import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,12 +43,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, GPXListeners.GPXParserListener, GPXListeners.GPXParserProgressListener  {
-    private Uri gpxURI;
-    private GPXParser mParser; //Variable para cargar gpx
-    private ProgressDialog mProgressDialog = null;
-    private List<GPXTrackPoint> mPoints = null;         //Lista de puntos gpx
 
+    LocationManager locationManager;
+    private Location location;
+    private Location posi_act=new Location(LocationManager.GPS_PROVIDER);
+    private Location posi_sig=new Location(LocationManager.GPS_PROVIDER);
+
+    int posit=0;
+
+    private List<TrackPointsActivity> items = new ArrayList<TrackPointsActivity>();
+
+    private List<GPXTrackPoint> mPoints = null;
     ListView lwPuntosGPS;
+    
+    private GPXParser mParser;
+
+
+    private ProgressDialog mProgressDialog = null;
 
 
     @Override
@@ -51,9 +67,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
         lwPuntosGPS=(ListView) findViewById(R.id.lwPuntosGPS);
 
         cargargpx("carolina.gpx");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+
+
     }
 
     ////Metodos de Location Manager
@@ -77,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     }
 
-
     //Metodos de pulsador
     @Override
     public void onClick(View v) {
@@ -88,57 +111,74 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     ///Metodos de gpx
     @Override
     public void onGpxParseStarted() {
+        mProgressDialog = ProgressDialog.show(this, "Parsing GPX", "Started");
 
     }
 
     @Override
     public void onGpxParseCompleted(GPXDocument document) {
         mProgressDialog.dismiss();
+        float val_bearing;
 
         mPoints=document.getTracks().get(0).getSegments().get(0).getTrackPoints(); //Poner puntos en la lista
 
-        ArrayList<GeoPoint> puntos = new ArrayList<GeoPoint>();                     //Lista de puntos geograficos
         for (int i = 0; i<(mPoints.size()); i++)
         {
-            GeoPoint t = new GeoPoint(mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude());
-            puntos.add(t);
+            if(i<(mPoints.size()-1)){
+                posi_act.setLatitude(mPoints.get(i).getLatitude());
+                posi_act.setLongitude(mPoints.get(i).getLongitude());
+
+                posi_sig.setLatitude(mPoints.get(i+1).getLatitude());
+                posi_sig.setLongitude(mPoints.get(i+1).getLongitude());
+
+                val_bearing=posi_act.bearingTo(posi_sig);
+            }
+            else val_bearing=0;
+
+            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing );
+            items.add(coord);
         }
 
         lwPuntosGPS.setAdapter(new BaseAdapter() {
+
             @Override
             public int getCount() {
-                return mPoints.size();
+                //posit=mPoints.size();
+                return items.size();
             }
 
             @Override
-            public Object getItem(int position) {
-                return mPoints.get(position);
+            public Object getItem(int arg0) {
+                posit++;
+                return items.get(arg0);
             }
 
             @Override
-            public long getItemId(int position) {
-                return position;
+            public long getItemId(int arg0) {
+                return arg0;
             }
 
             @Override
-            public View getView(int position, View convertView, ViewGroup vg) {
-                final LayoutInflater inflater= (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View v=convertView;
-                if (v==null) v=inflater.inflate(R.layout.puntos_gps,vg,false);
+            public View getView(int arg0, View recycled, ViewGroup vg) {
 
-                GPXBasePoint t= (GPXBasePoint) getItem(position);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View v = recycled;
+                if (v == null) v = inflater.inflate(R.layout.puntos_gps, vg, false);
 
-                TextView tvNumero= v.findViewById(R.id.tvNumero);
-                TextView tvLat_Long= v.findViewById(R.id.tvLat_Long);
-                TextView tvBearing= v.findViewById(R.id.tvLBearing);
+                //GPXBasePoint t = (GPXBasePoint) getItem(arg0);
+                TrackPointsActivity currentItem = (TrackPointsActivity) getItem(arg0);
 
-                tvNumero.setText("Punto: "+t.getName());
-                tvLat_Long.setText("Lati: "+t.getLatitude()+", Lon: "+t.getLongitude());
+                TextView tvNumero = v.findViewById(R.id.tvNumero);
+                TextView tvLat_Long = v.findViewById(R.id.tvLat_Long);
+                TextView tvBearing = v.findViewById(R.id.tvLBearing);
+
+                tvNumero.setText(String.format("Punto: %d", posit));
+                tvLat_Long.setText(String.format("Lati: %f, Long: %f",currentItem.itemLatitud(),currentItem.itemLongitud()));
+                tvBearing.setText(String.format("Bearing : %f",currentItem.itemBearing()));
 
                 return v;
             }
         });
-
 
 
     }
