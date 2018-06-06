@@ -59,6 +59,26 @@ public class Spalish extends AppCompatActivity {
         handler.postDelayed(runnable,2000);
         tvInicio.startAnimation(myanim);
 
+        toSpeech = new TextToSpeech(Spalish.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+
+                if(status==TextToSpeech.SUCCESS)
+                {
+                    Locale locSpanish = new Locale("spa", "ECU");
+                    //result=toSpeech.setLanguage(Locale.UK);
+                    resultt=toSpeech.setLanguage(locSpanish);
+                    toSpeech.speak("Bienvenido a ere and GO, app diseñada para atletas con discapacidad visual",TextToSpeech.QUEUE_FLUSH,null);
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"Caracteritica no soportada",Toast.LENGTH_SHORT).show();
+
+
+                }
+            }
+        });
+
         final Intent i = new Intent(this,MainActivity.class);
         Thread tim = new Thread(){
             public void run(){

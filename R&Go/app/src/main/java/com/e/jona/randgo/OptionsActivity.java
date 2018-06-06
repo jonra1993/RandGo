@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.e.jona.randgo.DataHolder;
@@ -24,6 +25,7 @@ import static com.e.jona.randgo.DataHolder.setData_Audio;
 public class OptionsActivity extends AppCompatActivity implements View.OnClickListener{
 
     Button b_cargar_gpx,b_carolina,b_estadiox, b_estadioy;
+    EditText etP,etI,etD;
     TextToSpeech toSpeech;
     int resultt;
     public boolean [] mem;
@@ -35,6 +37,15 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+
+        etP=findViewById(R.id.etP);
+        etI=findViewById(R.id.etI);
+        etD=findViewById(R.id.etD);
+
+        etP.setText((String.format("%.2f",DataHolder.getPID_P())).replace(',','.'));
+        etI.setText(String.format("%.2f",DataHolder.getPID_I()).replace(',','.'));
+        etD.setText(String.format("%.2f",DataHolder.getPID_D()).replace(',','.'));
+
 
         mem= new boolean[4];
         mem[0]=false;
@@ -53,6 +64,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         checkbox1=(CheckBox)findViewById(R.id.checkbox_audio);
         if(getData_Audio()) checkbox1.setChecked(true);
         else checkbox1.setChecked(false);
+
+
 
 
         toSpeech = new TextToSpeech(OptionsActivity.this, new TextToSpeech.OnInitListener() {
@@ -181,5 +194,12 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         }
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DataHolder.setPID(Float.parseFloat(etP.getText().toString()),Float.parseFloat(etI.getText().toString()),Float.parseFloat(etD.getText().toString()));
+    }
+
 }
+
 

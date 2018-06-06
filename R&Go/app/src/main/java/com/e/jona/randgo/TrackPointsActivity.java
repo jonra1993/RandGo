@@ -1,4 +1,4 @@
-package com.example.pc.seguim_bearing;
+package com.e.jona.randgo;
 
 public class TrackPointsActivity {
     private int itemNumber;

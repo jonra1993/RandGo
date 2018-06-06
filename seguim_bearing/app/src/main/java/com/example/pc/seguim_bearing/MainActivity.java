@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         lwPuntosGPS=(ListView) findViewById(R.id.lwPuntosGPS);
 
-        cargargpx("carolina.gpx");
+        cargargpx("CanchaEPN.gpx");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onGpxParseCompleted(GPXDocument document) {
         mProgressDialog.dismiss();
         float val_bearing;
+        float val_distancia;
 
         mPoints=document.getTracks().get(0).getSegments().get(0).getTrackPoints(); //Poner puntos en la lista
 
@@ -130,12 +131,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                 posi_sig.setLatitude(mPoints.get(i+1).getLatitude());
                 posi_sig.setLongitude(mPoints.get(i+1).getLongitude());
-
-                val_bearing=posi_act.bearingTo(posi_sig);
             }
-            else val_bearing=0;
+            else {
+                posi_act.setLatitude(mPoints.get(i).getLatitude());
+                posi_act.setLongitude(mPoints.get(i).getLongitude());
 
-            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing );
+                posi_sig.setLatitude(mPoints.get(0).getLatitude());
+                posi_sig.setLongitude(mPoints.get(0).getLongitude());
+            }
+
+            val_bearing=posi_act.bearingTo(posi_sig);
+            val_distancia=posi_act.distanceTo(posi_sig);
+
+            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia);
             items.add(coord);
         }
 
@@ -165,16 +173,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 View v = recycled;
                 if (v == null) v = inflater.inflate(R.layout.puntos_gps, vg, false);
 
-                //GPXBasePoint t = (GPXBasePoint) getItem(arg0);
                 TrackPointsActivity currentItem = (TrackPointsActivity) getItem(arg0);
 
                 TextView tvNumero = v.findViewById(R.id.tvNumero);
                 TextView tvLat_Long = v.findViewById(R.id.tvLat_Long);
                 TextView tvBearing = v.findViewById(R.id.tvLBearing);
+                TextView tvDistancia = v.findViewById(R.id.tvDistancia);
 
-                tvNumero.setText(String.format("Punto: %d", posit));
-                tvLat_Long.setText(String.format("Lati: %f, Long: %f",currentItem.itemLatitud(),currentItem.itemLongitud()));
-                tvBearing.setText(String.format("Bearing : %f",currentItem.itemBearing()));
+                tvNumero.setText(String.format("Punto: %d", currentItem.getitemNumber()));
+                tvLat_Long.setText(String.format("Lati: %f, Long: %f",currentItem.getitemLatitud(),currentItem.getitemLongitud()));
+                tvBearing.setText(String.format("Bearing : %f",currentItem.getitemBearing()));
+                tvDistancia.setText(String.format("Distancia alsig punto: %f",currentItem.getItemDistancia()));
 
                 return v;
             }
