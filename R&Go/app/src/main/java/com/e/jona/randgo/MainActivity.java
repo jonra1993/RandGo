@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     TextToSpeech toSpeech;
     int resultt;
     float bearing=500;
+    int tiempo=0;
 
     //Medicion de distancia
     double lat_inicial, lon_inicial, lat_actual, lon_actual, lat_ant, lon_ant;
@@ -116,6 +117,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     boolean [] mem;
     boolean me2;
     private static int conta;
+    private int index;
+    private float [] referencias={0,90, 180, -90,};
+    int ff=0;
 
 
     @Override
@@ -152,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         me2=false;
 
         conta=0;
+        index=0;
 
         setData_Audio(true);
 
@@ -187,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), map);
-        //mLocationOverlay.getLastFix();
+        mLocationOverlay.getLastFix();
         mLocationOverlay.setDrawAccuracyEnabled(true);
         map.getOverlays().add(this.mLocationOverlay);
         map.postInvalidate();
@@ -207,6 +212,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         TimerTask t = new TimerTask() {
             @Override
             public void run() {
+                tiempo++; if(tiempo>5){
+                    mem[0]=false;mem[1]=false;
+                    me2=false;
+                    tiempo=0;
+                }
+
+                ff++;
+                if(ff>10){
+                    if(comenzar==true){
+                        index++; if (index>3) index=0;
+                    }
+                    ff=0;
+                }
+
 
                 switch (DataHolder.getData())
                 {
@@ -229,6 +248,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         DataHolder.setData("NULL");
                         break;
                 }
+
+
             }
         };
         myTimer.scheduleAtFixedRate(t,0,1000);
@@ -240,6 +261,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 if(copy!=500&&comenzar==true&&getData_Audio())
                 {
                     if(copy>180) copy=copy-360;
+
+                   // if(referencia[index].distanceTo(actual)<5) index++
+
+                    pid.setSetpoint(referencias[index]);
+
                     double ley=pid.getOutput((double) copy);
                     float error= (float) pid.getError();
                     Log.d("Ley de control", String.valueOf(ley));
@@ -608,6 +634,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onClick(View v) {
+        tiempo=0;
         switch (v.getId()) {
             case R.id.btnMyLocation:
                 requestMyLocation();
@@ -652,6 +679,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         mp.start();
                         comenzar=true;
                         conta=0;
+                        index=0;
+                        ff=0;
 
                     }
                 }
@@ -689,7 +718,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         else toSpeech.speak(tempo2,TextToSpeech.QUEUE_FLUSH,null);
 
                         comenzar=false;
-                        conta=0;
+                        index=0;
 
                     }
 
@@ -752,3 +781,4 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mp.stop();
     }
 }
+
