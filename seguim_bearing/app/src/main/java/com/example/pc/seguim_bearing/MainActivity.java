@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     private List<GPXTrackPoint> mPoints = null;
     ListView lwPuntosGPS;
-    
+
     private GPXParser mParser;
 
 
