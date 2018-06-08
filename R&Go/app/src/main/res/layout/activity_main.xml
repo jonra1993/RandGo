@@ -31,7 +31,7 @@
             android:layout_width="150dp"
             android:layout_height="30dp"
             android:visibility="visible"
-            android:text="Bsg: "
+            android:text="Bref: "
             android:textSize="20dp"/>
 
     </LinearLayout>

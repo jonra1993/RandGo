@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="GPS Track Editor" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gte="http://www.gpstrackeditor.com/xmlschemas/General/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" targetNamespace="http://www.topografix.com/GPX/1/1" elementFormDefault="qualified" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<metadata>
+	<name>alangasi.gpx</name>
+</metadata>
+<trk>
+	<name>EstadioAlangasi</name>
+	<trkseg>
+		<trkpt lat="-0.302700" lon="-78.414636">
+			<ele>2562.80</ele>
+			<time>2018-06-07T15:26:34Z</time>
+		</trkpt>
+		<trkpt lat="-0.302733" lon="-78.414515">
+			<ele>2562.10</ele>
+			<time>2018-06-07T15:26:42Z</time>
+		</trkpt>
+		<trkpt lat="-0.302704" lon="-78.414392">
+			<ele>2562.50</ele>
+			<time>2018-06-07T15:26:51Z</time>
+		</trkpt>
+		<trkpt lat="-0.302621" lon="-78.414337">
+			<ele>2562.10</ele>
+			<time>2018-06-07T15:26:59Z</time>
+		</trkpt>
+		<trkpt lat="-0.302505" lon="-78.414292">
+			<ele>2562.50</ele>
+			<time>2018-06-07T15:27:08Z</time>
+		</trkpt>
+		<trkpt lat="-0.302400" lon="-78.414234">
+			<ele>2562.10</ele>
+			<time>2018-06-07T15:27:16Z</time>
+		</trkpt>
+		<trkpt lat="-0.302309" lon="-78.414175">
+			<ele>2560.40</ele>
+			<time>2018-06-07T15:27:24Z</time>
+		</trkpt>
+		<trkpt lat="-0.302200" lon="-78.414120">
+			<ele>2560.60</ele>
+			<time>2018-06-07T15:27:33Z</time>
+		</trkpt>
+		<trkpt lat="-0.302053" lon="-78.414040">
+			<ele>2559.00</ele>
+			<time>2018-06-07T15:27:44Z</time>
+		</trkpt>
+		<trkpt lat="-0.301956" lon="-78.413986">
+			<ele>2557.70</ele>
+			<time>2018-06-07T15:27:51Z</time>
+		</trkpt>
+		<trkpt lat="-0.301794" lon="-78.413933">
+			<ele>2555.00</ele>
+			<time>2018-06-07T15:28:03Z</time>
+		</trkpt>
+		<trkpt lat="-0.301693" lon="-78.413999">
+			<ele>2556.00</ele>
+			<time>2018-06-07T15:28:12Z</time>
+		</trkpt>
+		<trkpt lat="-0.301651" lon="-78.414089">
+			<ele>2557.60</ele>
+			<time>2018-06-07T15:28:18Z</time>
+		</trkpt>
+		<trkpt lat="-0.301599" lon="-78.414189">
+			<ele>2557.60</ele>
+			<time>2018-06-07T15:28:26Z</time>
+		</trkpt>
+		<trkpt lat="-0.301549" lon="-78.414275">
+			<ele>2557.90</ele>
+			<time>2018-06-07T15:28:32Z</time>
+		</trkpt>
+		<trkpt lat="-0.301525" lon="-78.414383">
+			<ele>2557.90</ele>
+			<time>2018-06-07T15:28:40Z</time>
+		</trkpt>
+		<trkpt lat="-0.301571" lon="-78.414495">
+			<ele>2559.10</ele>
+			<time>2018-06-07T15:28:49Z</time>
+		</trkpt>
+		<trkpt lat="-0.301677" lon="-78.414565">
+			<ele>2558.80</ele>
+			<time>2018-06-07T15:28:57Z</time>
+		</trkpt>
+		<trkpt lat="-0.301774" lon="-78.414610">
+			<ele>2558.80</ele>
+			<time>2018-06-07T15:29:04Z</time>
+		</trkpt>
+		<trkpt lat="-0.301875" lon="-78.414646">
+			<ele>2556.30</ele>
+			<time>2018-06-07T15:29:12Z</time>
+		</trkpt>
+		<trkpt lat="-0.301992" lon="-78.414700">
+			<ele>2555.80</ele>
+			<time>2018-06-07T15:29:22Z</time>
+		</trkpt>
+		<trkpt lat="-0.302090" lon="-78.414764">
+			<ele>2556.00</ele>
+			<time>2018-06-07T15:29:30Z</time>
+		</trkpt>
+		<trkpt lat="-0.302196" lon="-78.414820">
+			<ele>2557.00</ele>
+			<time>2018-06-07T15:29:38Z</time>
+		</trkpt>
+		<trkpt lat="-0.302288" lon="-78.414860">
+			<ele>2557.00</ele>
+			<time>2018-06-07T15:29:45Z</time>
+		</trkpt>
+		<trkpt lat="-0.302370" lon="-78.414909">
+			<ele>2557.00</ele>
+			<time>2018-06-07T15:29:51Z</time>
+		</trkpt>
+		<trkpt lat="-0.302503" lon="-78.414919">
+			<ele>2556.40</ele>
+			<time>2018-06-07T15:30:01Z</time>
+		</trkpt>
+		<trkpt lat="-0.302609" lon="-78.414857">
+			<ele>2557.10</ele>
+			<time>2018-06-07T15:30:10Z</time>
+		</trkpt>
+		<trkpt lat="-0.302661" lon="-78.414740">
+			<ele>2558.50</ele>
+			<time>2018-06-07T15:30:19Z</time>
+		</trkpt>
+		<trkpt lat="-0.302687" lon="-78.414649">
+			<ele>2558.90</ele>
+			<time>2018-06-07T15:30:29Z</time>
+		</trkpt>
+		<extensions>
+			<gte:name>#1</gte:name>
+			<gte:color>#fbaf00</gte:color>
+		</extensions>
+	</trkseg>
+</trk>
+</gpx>

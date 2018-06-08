@@ -98,12 +98,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     TextToSpeech toSpeech;
     int resultt;
     float bearing=500;
+    float bearing_actual=500;
     int tiempo=0;
 
     //Cargar gpx
     private List<TrackPointsActivity> items = new ArrayList<TrackPointsActivity>();
     private Location posi_act=new Location(LocationManager.GPS_PROVIDER);
     private Location posi_sig=new Location(LocationManager.GPS_PROVIDER);
+    private Location sig_paso=new Location(LocationManager.GPS_PROVIDER);
 
     //Medicion de distancia
     double lat_inicial, lon_inicial, lat_actual, lon_actual, lat_ant, lon_ant;
@@ -166,7 +168,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
 
         tvDistancia= findViewById(R.id.tvDistancia);
+        tvDistancia.setText(String.format("#: %d",index));
+
         tvPresicionGPS=findViewById(R.id.tvPresicionGPS);
+
         tvPrueba=findViewById(R.id.tvPrueba);
 
 
@@ -245,6 +250,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         cargargpx("esmil2.gpx");
                         DataHolder.setData("NULL");
                         break;
+                    case "Estadioz":
+                        cargargpx("lamerced.gpx");
+                        DataHolder.setData("NULL");
+                        break;
+                    case "Estadiozz":
+                        cargargpx("lamerced2.gpx");
+                        DataHolder.setData("NULL");
+                        break;
                 }
 
 
@@ -255,12 +268,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         TimerTask tt = new TimerTask() {
             @Override
             public void run() {
-                float copy=bearing;
-                if(copy!=500&&comenzar==true&&getData_Audio())
+                Log.i("Controlador","0");
+                if(bearing_actual!=500&&comenzar==true&&getData_Audio())
                 {
-                    if(copy>180) copy=copy-360;
-
-                    Location sig_paso=new Location(LocationManager.GPS_PROVIDER);
+                    Log.i("Controlador","1");
+                    //if(copy>180) copy=copy-360;
                     if (index<items.size()){
                         sig_paso.setLatitude(items.get(index+1).getitemLatitud());
                         sig_paso.setLongitude(items.get(index+1).getitemLongitud());
@@ -270,21 +282,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         sig_paso.setLongitude(items.get(0).getitemLongitud());
                         index=0;
                     }
-
+                    Log.i("Controlador","2");
                     float ref= items.get(index).getitemBearing();
-                    tvPrueba.setText("Bsg: "+ref);
+                    Log.i("Controlador","21");
+                    //tvPrueba.setText("prueba");
+                    Log.i("Controlador","22");
                     float ref_dis=items.get(index).getItemDistancia();
+                    Log.i("Controlador","23");
                     float dis_dinamica=location.distanceTo(sig_paso);
+                    Log.i("Controlador","24");
 
                    if(dis_dinamica<(0.3*ref_dis)){
                            index++;
-                           tvDistancia.setText(String.format("#: ",index));
                    }
-
+                    Log.i("Controlador","3");
                     pid.setSetpoint(ref);
-
-                    double ley=pid.getOutput((double) copy);
+                    Log.i("Controlador","4");
+                    double ley=pid.getOutput((double) bearing_actual);
+                    Log.i("Controlador","5");
                     float error= (float) pid.getError();
+                    Log.i("Controlador","6");
                     Log.d("Ley de control", String.valueOf(ley));
                     float[] temp = funcion_sonido_pid((float) ley, volumen_normal * 100,error, -5,5);
                     Log.d("Volumen r", String.valueOf(temp[0]));
@@ -403,7 +420,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (location.hasBearing()){
             calculo_distancia(location);
             bearing = location.getBearing();
-            tvPresicionGPS.setText("Bac: "+location.getBearing());
+            bearing_actual=location.bearingTo(sig_paso);
+            tvPresicionGPS.setText(String.format("Bac: %.2f",location.bearingTo(sig_paso)));
+            tvDistancia.setText(String.format("#: %d",index));
+            if(comenzar==true)
+                tvPrueba.setText(String.format("Bref : %.2f",items.get(index).getitemBearing()));
         }
         else{
             bearing=500;
