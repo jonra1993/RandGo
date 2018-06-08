@@ -267,8 +267,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         TimerTask tt = new TimerTask() {
             @Override
-            public void run() {
-                Log.i("Controlador","0");
+            public void run() { ;
                 if(bearing_actual!=500&&comenzar==true&&getData_Audio())
                 {
                     Log.i("Controlador","1");
@@ -420,11 +419,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (location.hasBearing()){
             calculo_distancia(location);
             bearing = location.getBearing();
-            bearing_actual=location.bearingTo(sig_paso);
-            tvPresicionGPS.setText(String.format("Bac: %.2f",location.bearingTo(sig_paso)));
-            tvDistancia.setText(String.format("#: %d",index));
-            if(comenzar==true)
-                tvPrueba.setText(String.format("Bref : %.2f",items.get(index).getitemBearing()));
+            if(comenzar==true) {
+                bearing_actual = location.bearingTo(sig_paso);
+                tvPresicionGPS.setText(String.format("Bac: %.2f", location.bearingTo(sig_paso)));
+                tvDistancia.setText(String.format("#: %d", index));
+                tvPrueba.setText(String.format("Bref : %.2f", items.get(0).getitemBearing()));
+            }
         }
         else{
             bearing=500;
