@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         break;
                     case "CanchaEPN":
-                        cargargpx("CanchaEPN.gpx");
+                        cargargpx("CanchaEPN2.gpx");
                         DataHolder.setData("NULL");
 
                         break;
@@ -268,10 +268,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         TimerTask tt = new TimerTask() {
             @Override
             public void run() { ;
+            float copy=bearing_actual;
                 if(bearing_actual!=500&&comenzar==true&&getData_Audio())
                 {
                     Log.i("Controlador","1");
-                    //if(copy>180) copy=copy-360;
+                    if(copy>180) copy-=360;
                     if (index<items.size()){
                         sig_paso.setLatitude(items.get(index+1).getitemLatitud());
                         sig_paso.setLongitude(items.get(index+1).getitemLongitud());
@@ -281,26 +282,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         sig_paso.setLongitude(items.get(0).getitemLongitud());
                         index=0;
                     }
-                    Log.i("Controlador","2");
-                    float ref= items.get(index).getitemBearing();
-                    Log.i("Controlador","21");
-                    //tvPrueba.setText("prueba");
-                    Log.i("Controlador","22");
-                    float ref_dis=items.get(index).getItemDistancia();
-                    Log.i("Controlador","23");
-                    float dis_dinamica=location.distanceTo(sig_paso);
-                    Log.i("Controlador","24");
 
-                   if(dis_dinamica<(0.3*ref_dis)){
+                    float ref= items.get(index).getitemBearing();
+                    //tvPrueba.setText("prueba");
+                    float ref_dis=items.get(index).getItemDistancia();
+                    float dis_dinamica=location.distanceTo(sig_paso);
+
+                   if(dis_dinamica<(0.5*ref_dis)){
                            index++;
                    }
-                    Log.i("Controlador","3");
+
                     pid.setSetpoint(ref);
-                    Log.i("Controlador","4");
-                    double ley=pid.getOutput((double) bearing_actual);
-                    Log.i("Controlador","5");
+                    double ley=pid.getOutput((double) copy);
                     float error= (float) pid.getError();
-                    Log.i("Controlador","6");
                     Log.d("Ley de control", String.valueOf(ley));
                     float[] temp = funcion_sonido_pid((float) ley, volumen_normal * 100,error, -5,5);
                     Log.d("Volumen r", String.valueOf(temp[0]));
@@ -420,10 +414,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             calculo_distancia(location);
             bearing = location.getBearing();
             if(comenzar==true) {
-                bearing_actual = location.bearingTo(sig_paso);
+                bearing_actual = location.getBearing();
                 tvPresicionGPS.setText(String.format("Bac: %.2f", location.bearingTo(sig_paso)));
                 tvDistancia.setText(String.format("#: %d", index));
-                tvPrueba.setText(String.format("Bref : %.2f", items.get(0).getitemBearing()));
+                tvPrueba.setText(String.format("Bref : %.2f", items.get(index).getitemBearing()));
             }
         }
         else{
