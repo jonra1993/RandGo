@@ -7,7 +7,7 @@ package com.e.jona.randgo;
 //https://www.movable-type.co.uk/scripts/latlong.html
 //https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
 //https://memorynotfound.com/calculating-elapsed-time-java/
-
+// kalman https://medium.com/@mizutori/make-it-even-better-than-nike-how-to-filter-locations-tracking-highly-accurate-location-in-1c9d53d31d93
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -22,12 +22,14 @@ import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,6 +74,7 @@ import com.e.jona.randgo.DataHolder;
 import java.util.concurrent.TimeUnit;
 import java.util.*;
 
+import static android.content.ContentValues.TAG;
 import static com.e.jona.randgo.DataHolder.getData_Audio;
 import static com.e.jona.randgo.DataHolder.setData_Audio;
 
@@ -106,12 +109,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private Location posi_act=new Location(LocationManager.GPS_PROVIDER);
     private Location posi_sig=new Location(LocationManager.GPS_PROVIDER);
     private Location sig_paso=new Location(LocationManager.GPS_PROVIDER);
+    private Location loc_filtrada=new Location(LocationManager.GPS_PROVIDER);
+    private Location loc_anterior=new Location(LocationManager.GPS_PROVIDER);
 
     //Medicion de distancia
     double lat_inicial, lon_inicial, lat_actual, lon_actual, lat_ant, lon_ant;
     float dist = 0;
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
-    private static final long MIN_TIME_BW_UPDATES = 300;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // in Meters
+    private static final long MIN_TIME_BW_UPDATES = 500;
     private static final int lim_accur_gps=8;
 
     MediaPlayer mp;
@@ -120,12 +125,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static Location lo=null;
     static Location dest=null;
 
-    TextView tvDistancia, tvPresicionGPS, tvPrueba;
+    TextView tv_bearing_real, tv_bearing_filtrado,tvlonlat_real,tvlonlat_filt;
     boolean [] mem;
     boolean me2;
     private static int conta;
     private int index;
     private float [] referencias={0,90, 180, -90,};
+
+    ArrayList<Location> locationList;
+
+    ArrayList<Location> oldLocationList;
+    ArrayList<Location> noAccuracyLocationList;
+    ArrayList<Location> inaccurateLocationList;
+    ArrayList<Location> kalmanNGLocationList;
+    KalmanLatLong kalmanFilter;
+    float currentSpeed = 0.0f; // meters/second
+    long runStartTimeInMillis;
 
 
     @Override
@@ -151,6 +166,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         SharedPreferences prefs = getSharedPreferences("OSMNAVIGATOR", MODE_PRIVATE);
 
+        locationList = new ArrayList<>();
+        noAccuracyLocationList = new ArrayList<>();
+        oldLocationList = new ArrayList<>();
+        inaccurateLocationList = new ArrayList<>();
+        kalmanNGLocationList = new ArrayList<>();
+        kalmanFilter = new KalmanLatLong(3);
+
         //conectar layout
         btnMyLocation = findViewById(R.id.btnMyLocation);
         btnMyLocation.setOnClickListener(this);
@@ -167,12 +189,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         setData_Audio(true);
 
 
-        tvDistancia= findViewById(R.id.tvDistancia);
-        tvDistancia.setText(String.format("#: %d",index));
+        tv_bearing_real=findViewById(R.id.tv_bearing_real);
+        tv_bearing_filtrado=findViewById(R.id.tv_bearing_filtrado);
+        tvlonlat_real =findViewById(R.id.tvlonlat_real);
+        tvlonlat_filt =findViewById(R.id.tvlonlat_filt);
 
-        tvPresicionGPS=findViewById(R.id.tvPresicionGPS);
-
-        tvPrueba=findViewById(R.id.tvPrueba);
 
 
         //inicialización del PID
@@ -406,7 +427,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //updateLocation(location);
         //tvPresicionGPS.setText("GPS: "+location.getAccuracy());
         this.location=location;
+
+        //locationList.add(newLocation);
+        filterAndAddLocation(location);
+
         if (on==0){
+            loc_anterior=location;
+            //loc_filtrada
             updateLocation(location);
             on=1;
         }
@@ -414,16 +441,90 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             calculo_distancia(location);
             bearing = location.getBearing();
             if(comenzar==true) {
-                bearing_actual = location.getBearing();
-                tvPresicionGPS.setText(String.format("Bac: %.2f", location.bearingTo(sig_paso)));
-                tvDistancia.setText(String.format("#: %d", index));
-                tvPrueba.setText(String.format("Bref : %.2f", items.get(index).getitemBearing()));
+                tv_bearing_filtrado.setText(String.format("B_f: %.2f",loc_filtrada.getBearing() ));
+                tv_bearing_real.setText(String.format("B_r: %.2f", bearing));
+                tvlonlat_real.setText(String.format(""+location.getLatitude()+";"+location.getLongitude()));
+                tvlonlat_filt.setText(String.format(""+loc_filtrada.getLatitude()+";"+loc_filtrada.getLongitude()));
             }
         }
         else{
             bearing=500;
         }
 
+    }
+
+    private long getLocationAge(Location newLocation){
+        long locationAge;
+        if(android.os.Build.VERSION.SDK_INT >= 17) {
+            long currentTimeInMilli = (long)(SystemClock.elapsedRealtimeNanos() / 1000000);
+            long locationTimeInMilli = (long)(newLocation.getElapsedRealtimeNanos() / 1000000);
+            locationAge = currentTimeInMilli - locationTimeInMilli;
+        }else{
+            locationAge = System.currentTimeMillis() - newLocation.getTime();
+        }
+        return locationAge;
+    }
+
+    private boolean filterAndAddLocation(Location location){
+
+        long age = getLocationAge(location);
+
+        if(age > 5 * 1000){ //more than 5 seconds
+            Log.d(TAG, "Location is old");
+            return false;
+        }
+
+        if(location.getAccuracy() <= 0){
+            Log.d(TAG, "Latitidue and longitude values are invalid.");
+            return false;
+        }
+
+        float horizontalAccuracy = location.getAccuracy();
+        if(horizontalAccuracy > 10){ //10meter filter
+            Log.d(TAG, "Accuracy is too low.");
+            return false;
+        }
+
+        /* Kalman Filter */
+        float Qvalue;
+
+        long locationTimeInMillis = (long)(location.getElapsedRealtimeNanos() / 1000000);
+        long elapsedTimeInMillis = locationTimeInMillis - runStartTimeInMillis;
+
+        if(currentSpeed == 0.0f){
+            Qvalue = 3.0f; //3 meters per second
+        }else{
+            Qvalue = currentSpeed; // meters per second
+        }
+
+        kalmanFilter.Process(location.getLatitude(), location.getLongitude(), location.getAccuracy(), elapsedTimeInMillis, Qvalue);
+        double predictedLat = kalmanFilter.get_lat();
+        double predictedLng = kalmanFilter.get_lng();
+
+        Location predictedLocation = new Location(LocationManager.GPS_PROVIDER);//provider name is unecessary
+        predictedLocation.setLatitude(predictedLat);//your coords of course
+        predictedLocation.setLongitude(predictedLng);
+        float predictedDeltaInMeters =  predictedLocation.distanceTo(location);
+
+        if(predictedDeltaInMeters > 60){
+            Log.d(TAG, "Kalman Filter detects mal GPS, we should probably remove this from track");
+            kalmanFilter.consecutiveRejectCount += 1;
+
+            if(kalmanFilter.consecutiveRejectCount > 3){
+                kalmanFilter = new KalmanLatLong(3); //reset Kalman Filter if it rejects more than 3 times in raw.
+            }
+            return false;
+        }else{
+            kalmanFilter.consecutiveRejectCount = 0;
+        }
+
+        Log.d(TAG, "Location quality is good enough.");
+        currentSpeed = location.getSpeed();
+        locationList.add(location);
+        loc_filtrada=predictedLocation;
+        loc_anterior=loc_filtrada;
+
+        return true;
     }
 
     @Override
@@ -514,6 +615,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             // TODO: Consider calling
             return;
         }
+        runStartTimeInMillis = (long)(SystemClock.elapsedRealtimeNanos() / 1000000);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
         //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
     }
@@ -801,6 +903,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             result.put(unit, diff);
         }
         return result;
+    }
+
+    public int near(List<TrackPointsActivity> items, Location locationnow){
+
+        int minIndex = -1;
+        float minDist = 10000000; // initialize with a huge value that will be overwritten
+        Location targetLocation = new Location("");//provider name is unnecessary
+
+        for (int i = 0; i < items.size(); i++) {
+            targetLocation.setLatitude(items.get(i).getitemLatitud());//your coords of course
+            targetLocation.setLongitude(items.get(i).getitemLongitud());
+
+            float distanceInMeters =  locationnow.distanceTo(targetLocation);
+            if (distanceInMeters < minDist) {
+                minDist = distanceInMeters;  // update neares
+                minIndex = i;           // store index of nearest marker in minIndex
+            }
+        }
+        return minIndex+1;  //si se le aumenta 1 se asegura q sea un punto adelante de la persona
     }
 
     public  static  float[] funcion_sonido_pid(float ley, float maxV,float error, float hi, float hd)
