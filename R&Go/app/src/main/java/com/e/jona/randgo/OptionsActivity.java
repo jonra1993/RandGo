@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.e.jona.randgo.DataHolder;
@@ -23,7 +24,8 @@ import static com.e.jona.randgo.DataHolder.setData_Audio;
 
 public class OptionsActivity extends AppCompatActivity implements View.OnClickListener{
 
-    Button b_cargar_gpx,b_carolina,b_estadiox, b_estadioy;
+    Button b_cargar_gpx,b_carolina,b_estadiox, b_estadioy, btestadio3,btestadio4;
+    EditText etP,etI,etD;
     TextToSpeech toSpeech;
     int resultt;
     public boolean [] mem;
@@ -36,11 +38,21 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
-        mem= new boolean[4];
+        etP=findViewById(R.id.etP);
+        etI=findViewById(R.id.etI);
+        etD=findViewById(R.id.etD);
+
+        etP.setText((String.format("%.2f",DataHolder.getPID_P())).replace(',','.'));
+        etI.setText(String.format("%.2f",DataHolder.getPID_I()).replace(',','.'));
+        etD.setText(String.format("%.2f",DataHolder.getPID_D()).replace(',','.'));
+
+
+        mem= new boolean[5];
         mem[0]=false;
         mem[1]=false;
         mem[2]=false;
         mem[3]=false;
+        mem[4]=false;
         b_cargar_gpx=findViewById(R.id.b_cargar_gpx);
         b_cargar_gpx.setOnClickListener(this);
         b_carolina=findViewById(R.id.b_carolina);
@@ -49,10 +61,16 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         b_estadiox.setOnClickListener(this);
         b_estadioy=findViewById(R.id.b_estadioy);
         b_estadioy.setOnClickListener(this);
+        btestadio3=findViewById(R.id.btestadio3);
+        btestadio3.setOnClickListener(this);
+        btestadio4=findViewById(R.id.btestadio4);
+        btestadio4.setOnClickListener(this);
 
         checkbox1=(CheckBox)findViewById(R.id.checkbox_audio);
         if(getData_Audio()) checkbox1.setChecked(true);
         else checkbox1.setChecked(false);
+
+
 
 
         toSpeech = new TextToSpeech(OptionsActivity.this, new TextToSpeech.OnInitListener() {
@@ -85,6 +103,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     mem[0]=false;
                     mem[1]=false;
                     mem[2]=false;
+                    mem[4]=false;
                     tiempo=0;
                 }
 
@@ -116,6 +135,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[1]=false;
                 mem[2]=false;
                 mem[3]=false;
+                mem[4]=false;
                 toSpeech.speak(getString(R.string.tit2),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_estadiox:
@@ -131,6 +151,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[1]=true;
                 mem[2]=false;
                 mem[3]=false;
+                mem[4]=false;
                 toSpeech.speak(getString(R.string.tit3),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_estadioy:
@@ -146,7 +167,41 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[1]=false;
                 mem[2]=true;
                 mem[3]=false;
+                mem[4]=false;
                 toSpeech.speak(getString(R.string.tit4),TextToSpeech.QUEUE_FLUSH,null);
+                break;
+            case R.id.btestadio3:
+                DataHolder.setData("Estadioz");
+                if (mem[3]==true){
+                    this.finish();
+                    toSpeech.speak("Estadio Alangasi"+" cargado",TextToSpeech.QUEUE_FLUSH,null);
+                    if (checkbox1.isChecked()==true) setData_Audio(true);
+                    else setData_Audio(false);
+                    break;
+                }
+                mem[0]=false;
+                mem[1]=false;
+                mem[2]=false;
+                mem[3]=true;
+                mem[4]=false;
+                toSpeech.speak("Estadio Alangasi",TextToSpeech.QUEUE_FLUSH,null);
+                break;
+
+            case R.id.btestadio4:
+                DataHolder.setData("Estadiozz");
+                if (mem[4]==true){
+                    this.finish();
+                    toSpeech.speak("Estadio Alangasi 2"+" cargado",TextToSpeech.QUEUE_FLUSH,null);
+                    if (checkbox1.isChecked()==true) setData_Audio(true);
+                    else setData_Audio(false);
+                    break;
+                }
+                mem[0]=false;
+                mem[1]=false;
+                mem[2]=false;
+                mem[3]=false;
+                mem[4]=true;
+                toSpeech.speak("Estadio Alangasi 2",TextToSpeech.QUEUE_FLUSH,null);
                 break;
         }
 
@@ -181,5 +236,12 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         }
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DataHolder.setPID(Float.parseFloat(etP.getText().toString()),Float.parseFloat(etI.getText().toString()),Float.parseFloat(etD.getText().toString()));
+    }
+
 }
+
 

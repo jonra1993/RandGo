@@ -59,8 +59,6 @@ public class Spalish extends AppCompatActivity {
         handler.postDelayed(runnable,2000);
         tvInicio.startAnimation(myanim);
 
-
-
         toSpeech = new TextToSpeech(Spalish.this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -80,7 +78,6 @@ public class Spalish extends AppCompatActivity {
                 }
             }
         });
-
 
         final Intent i = new Intent(this,MainActivity.class);
         Thread tim = new Thread(){

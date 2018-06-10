@@ -98,7 +98,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     TextToSpeech toSpeech;
     int resultt;
     float bearing=500;
+    float bearing_actual=500;
     int tiempo=0;
+
+    //Cargar gpx
+    private List<TrackPointsActivity> items = new ArrayList<TrackPointsActivity>();
+    private Location posi_act=new Location(LocationManager.GPS_PROVIDER);
+    private Location posi_sig=new Location(LocationManager.GPS_PROVIDER);
+    private Location sig_paso=new Location(LocationManager.GPS_PROVIDER);
 
     //Medicion de distancia
     double lat_inicial, lon_inicial, lat_actual, lon_actual, lat_ant, lon_ant;
@@ -113,13 +120,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static Location lo=null;
     static Location dest=null;
 
-    TextView tvDistancia, tvPresicionGPS;
+    TextView tvDistancia, tvPresicionGPS, tvPrueba;
     boolean [] mem;
     boolean me2;
     private static int conta;
     private int index;
     private float [] referencias={0,90, 180, -90,};
-    int ff=0;
 
 
     @Override
@@ -162,11 +168,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
 
         tvDistancia= findViewById(R.id.tvDistancia);
+        tvDistancia.setText(String.format("#: %d",index));
+
         tvPresicionGPS=findViewById(R.id.tvPresicionGPS);
+
+        tvPrueba=findViewById(R.id.tvPrueba);
 
 
         //inicialización del PID
-        pid = new PID(1,0,0);
+        DataHolder.setPID(1,0,0);
+        pid = new PID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
         pid.setOutputLimits(-100,100);
         //pid.setSetpoint((double)lo.bearingTo(dest));
         pid.setSetpoint(0);
@@ -218,14 +229,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     tiempo=0;
                 }
 
-                ff++;
-                if(ff>10){
-                    if(comenzar==true){
-                        index++; if (index>3) index=0;
-                    }
-                    ff=0;
-                }
-
 
                 switch (DataHolder.getData())
                 {
@@ -239,12 +242,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         break;
                     case "CanchaEPN":
-                        cargargpx("CanchaEPN.gpx");
+                        cargargpx("CanchaEPN2.gpx");
                         DataHolder.setData("NULL");
 
                         break;
                     case "Estadioy":
                         cargargpx("esmil2.gpx");
+                        DataHolder.setData("NULL");
+                        break;
+                    case "Estadioz":
+                        cargargpx("lamerced.gpx");
+                        DataHolder.setData("NULL");
+                        break;
+                    case "Estadiozz":
+                        cargargpx("lamerced2.gpx");
                         DataHolder.setData("NULL");
                         break;
                 }
@@ -256,16 +267,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         TimerTask tt = new TimerTask() {
             @Override
-            public void run() {
-                float copy=bearing;
-                if(copy!=500&&comenzar==true&&getData_Audio())
+            public void run() { ;
+            float copy=bearing_actual;
+                if(bearing_actual!=500&&comenzar==true&&getData_Audio())
                 {
-                    if(copy>180) copy=copy-360;
+                    Log.i("Controlador","1");
+                    if(copy>180) copy-=360;
+                    if (index<items.size()){
+                        sig_paso.setLatitude(items.get(index+1).getitemLatitud());
+                        sig_paso.setLongitude(items.get(index+1).getitemLongitud());
+                    }
+                    else {
+                        sig_paso.setLatitude(items.get(0).getitemLatitud());
+                        sig_paso.setLongitude(items.get(0).getitemLongitud());
+                        index=0;
+                    }
 
-                   // if(referencia[index].distanceTo(actual)<5) index++
+                    float ref= items.get(index).getitemBearing();
+                    //tvPrueba.setText("prueba");
+                    float ref_dis=items.get(index).getItemDistancia();
+                    float dis_dinamica=location.distanceTo(sig_paso);
 
-                    pid.setSetpoint(referencias[index]);
+                   if(dis_dinamica<(0.5*ref_dis)){
+                           index++;
+                   }
 
+                    pid.setSetpoint(ref);
                     double ley=pid.getOutput((double) copy);
                     float error= (float) pid.getError();
                     Log.d("Ley de control", String.valueOf(ley));
@@ -377,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
         //updateLocation(location);
-        tvPresicionGPS.setText("GPS: "+location.getAccuracy());
+        //tvPresicionGPS.setText("GPS: "+location.getAccuracy());
         this.location=location;
         if (on==0){
             updateLocation(location);
@@ -386,6 +413,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (location.hasBearing()){
             calculo_distancia(location);
             bearing = location.getBearing();
+            if(comenzar==true) {
+                bearing_actual = location.getBearing();
+                tvPresicionGPS.setText(String.format("Bac: %.2f", location.bearingTo(sig_paso)));
+                tvDistancia.setText(String.format("#: %d", index));
+                tvPrueba.setText(String.format("Bref : %.2f", items.get(index).getitemBearing()));
+            }
         }
         else{
             bearing=500;
@@ -436,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 //etLocation.setText(" "+results[0]);
                 dist = dist + results[0];
                 //etDistancia.setText(String.format("%1$s [m]", dist));
-                tvDistancia.setText("Distancia: "+dist);
+                //tvDistancia.setText("Distancia: "+dist);
             }
 
             lat_ant = lat_actual;
@@ -544,15 +577,42 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onGpxParseCompleted(GPXDocument document) {
         mProgressDialog.dismiss();
+        float val_bearing;
+        float val_distancia;
+
+        items.clear();              //Limpiar Lista de calse
 
         List<GPXTrackPoint> mPoints = null;
         mPoints=document.getTracks().get(0).getSegments().get(0).getTrackPoints();
         ArrayList<GeoPoint> puntos = new ArrayList<GeoPoint>();
         for (int i = 0; i<(mPoints.size()); i++)
         {
+            if(i<(mPoints.size()-1)){
+                posi_act.setLatitude(mPoints.get(i).getLatitude());
+                posi_act.setLongitude(mPoints.get(i).getLongitude());
+
+                posi_sig.setLatitude(mPoints.get(i+1).getLatitude());
+                posi_sig.setLongitude(mPoints.get(i+1).getLongitude());
+            }
+            else {
+                posi_act.setLatitude(mPoints.get(i).getLatitude());
+                posi_act.setLongitude(mPoints.get(i).getLongitude());
+
+                posi_sig.setLatitude(mPoints.get(0).getLatitude());
+                posi_sig.setLongitude(mPoints.get(0).getLongitude());
+            }
+
+            val_bearing=posi_act.bearingTo(posi_sig);
+            val_distancia=posi_act.distanceTo(posi_sig);
+
+            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia);
+            items.add(coord);
+
             GeoPoint t = new GeoPoint(mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude());
             puntos.add(t);
         }
+        //String aux=String.format("La: %.2f,Lo: %.2f,B: %.2f,D: %.2f",items.get(5).getitemLatitud(),items.get(5).getitemLongitud(), items.get(5).getitemBearing(),items.get(5).getItemDistancia());
+
         updateUIWithPolygon(puntos,"ruta1");
         btnNavigation.show();
     }
@@ -680,7 +740,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         comenzar=true;
                         conta=0;
                         index=0;
-                        ff=0;
+                        pid.setPID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
 
                     }
                 }

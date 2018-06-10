@@ -6,15 +6,40 @@ package com.e.jona.randgo;
 
 public class DataHolder {
     private static boolean audio;
+    private static float P, I, D;
     private static String orden;
+
     public static String getData() {
         return orden;
     }
+
     public static void setData(String data) {
         DataHolder.orden = data;
     }
+
     public static boolean getData_Audio() {
         return audio;
     }
-    public static void setData_Audio(boolean data) { DataHolder.audio = data; }
+
+    public static void setData_Audio(boolean data) {
+        DataHolder.audio = data;
+    }
+
+    public static float getPID_P() {
+        return P;
+    }
+
+    public static float getPID_I() {
+        return I;
+    }
+
+    public static float getPID_D() {
+        return D;
+    }
+
+    public static void setPID(float P, float I, float D) {
+        DataHolder.P = P;
+        DataHolder.I = I;
+        DataHolder.D = D;
+    }
 }
