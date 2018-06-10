@@ -132,12 +132,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private int index;
     private float [] referencias={0,90, 180, -90,};
 
-    ArrayList<Location> locationList;
-
-    ArrayList<Location> oldLocationList;
-    ArrayList<Location> noAccuracyLocationList;
-    ArrayList<Location> inaccurateLocationList;
-    ArrayList<Location> kalmanNGLocationList;
     KalmanLatLong kalmanFilter;
     float currentSpeed = 0.0f; // meters/second
     long runStartTimeInMillis;
@@ -166,11 +160,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         SharedPreferences prefs = getSharedPreferences("OSMNAVIGATOR", MODE_PRIVATE);
 
-        locationList = new ArrayList<>();
-        noAccuracyLocationList = new ArrayList<>();
-        oldLocationList = new ArrayList<>();
-        inaccurateLocationList = new ArrayList<>();
-        kalmanNGLocationList = new ArrayList<>();
         kalmanFilter = new KalmanLatLong(3);
 
         //conectar layout
@@ -428,7 +417,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //tvPresicionGPS.setText("GPS: "+location.getAccuracy());
         this.location=location;
 
-        //locationList.add(newLocation);
         filterAndAddLocation(location);
 
         if (on==0){
@@ -520,9 +508,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         Log.d(TAG, "Location quality is good enough.");
         currentSpeed = location.getSpeed();
-        locationList.add(location);
         loc_filtrada=predictedLocation;
-        loc_anterior=loc_filtrada;
+        loc_anterior=location;
 
         return true;
     }
