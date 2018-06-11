@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="GPS Track Editor" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gte="http://www.gpstrackeditor.com/xmlschemas/General/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" targetNamespace="http://www.topografix.com/GPX/1/1" elementFormDefault="qualified" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<metadata>
+	<name>CanchaEPN.gpx</name>
+	<author>
+		<name>WTracks - Online GPX track editor</name>
+	</author>
+	<link href="https://wtracks.appspot.com/">
+		<text>WTracks</text>
+		<type>text/html</type>
+	</link>
+</metadata>
+<trk>
+	<name>CanchaEPN</name>
+	<trkseg>
+		<trkpt lat="-0.211379" lon="-78.489065">
+			<ele>2823.00</ele>
+			<time>2018-05-31T00:43:00Z</time>
+		</trkpt>
+		<trkpt lat="-0.211658" lon="-78.489305">
+			<ele>2826.00</ele>
+			<time>2018-05-31T00:43:02.57Z</time>
+		</trkpt>
+		<trkpt lat="-0.211998" lon="-78.489616">
+			<ele>2826.00</ele>
+			<time>2018-05-31T00:43:05.65Z</time>
+		</trkpt>
+		<trkpt lat="-0.212104" lon="-78.489659">
+			<ele>2826.00</ele>
+			<time>2018-05-31T00:43:06.41Z</time>
+		</trkpt>
+		<trkpt lat="-0.212213" lon="-78.489679">
+			<ele>2826.00</ele>
+			<time>2018-05-31T00:43:07.14Z</time>
+		</trkpt>
+		<trkpt lat="-0.212299" lon="-78.489666">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:07.73Z</time>
+		</trkpt>
+		<trkpt lat="-0.212408" lon="-78.489631">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:08.49Z</time>
+		</trkpt>
+		<trkpt lat="-0.212468" lon="-78.489573">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:09.04Z</time>
+		</trkpt>
+		<trkpt lat="-0.212532" lon="-78.489477">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:09.81Z</time>
+		</trkpt>
+		<trkpt lat="-0.212566" lon="-78.489369">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:10.57Z</time>
+		</trkpt>
+		<trkpt lat="-0.212569" lon="-78.489286">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:11.12Z</time>
+		</trkpt>
+		<trkpt lat="-0.212560" lon="-78.489201">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:11.69Z</time>
+		</trkpt>
+		<trkpt lat="-0.212512" lon="-78.489104">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:12.41Z</time>
+		</trkpt>
+		<trkpt lat="-0.212457" lon="-78.489043">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:12.96Z</time>
+		</trkpt>
+		<trkpt lat="-0.212156" lon="-78.488774">
+			<ele>2828.00</ele>
+			<time>2018-05-31T00:43:15.66Z</time>
+		</trkpt>
+		<trkpt lat="-0.211821" lon="-78.488482">
+			<ele>2829.00</ele>
+			<time>2018-05-31T00:43:18.63Z</time>
+		</trkpt>
+		<trkpt lat="-0.211723" lon="-78.488438">
+			<ele>2828.00</ele>
+			<time>2018-05-31T00:43:19.34Z</time>
+		</trkpt>
+		<trkpt lat="-0.211622" lon="-78.488427">
+			<ele>2828.00</ele>
+			<time>2018-05-31T00:43:20.02Z</time>
+		</trkpt>
+		<trkpt lat="-0.211549" lon="-78.488447">
+			<ele>2828.00</ele>
+			<time>2018-05-31T00:43:20.52Z</time>
+		</trkpt>
+		<trkpt lat="-0.211459" lon="-78.488490">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:21.18Z</time>
+		</trkpt>
+		<trkpt lat="-0.211400" lon="-78.488539">
+			<ele>2827.00</ele>
+			<time>2018-05-31T00:43:21.70Z</time>
+		</trkpt>
+		<trkpt lat="-0.211326" lon="-78.488639">
+			<ele>2826.00</ele>
+			<time>2018-05-31T00:43:22.53Z</time>
+		</trkpt>
+		<trkpt lat="-0.211294" lon="-78.488728">
+			<ele>2826.00</ele>
+			<time>2018-05-31T00:43:23.16Z</time>
+		</trkpt>
+		<trkpt lat="-0.211285" lon="-78.488799">
+			<ele>2825.00</ele>
+			<time>2018-05-31T00:43:23.63Z</time>
+		</trkpt>
+		<trkpt lat="-0.211307" lon="-78.488899">
+			<ele>2826.00</ele>
+			<time>2018-05-31T00:43:24.31Z</time>
+		</trkpt>
+		<trkpt lat="-0.211326" lon="-78.488999">
+			<ele>2826.00</ele>
+			<time>2018-05-31T00:43:25Z</time>
+		</trkpt>
+		<extensions>
+			<gte:name>#1</gte:name>
+			<gte:color>#fbaf00</gte:color>
+		</extensions>
+	</trkseg>
+</trk>
+</gpx>

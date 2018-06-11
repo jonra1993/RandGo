@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     double lat_inicial, lon_inicial, lat_actual, lon_actual, lat_ant, lon_ant;
     float dist = 0;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
-    private static final long MIN_TIME_BW_UPDATES = 300;
-    private static final int lim_accur_gps=8;
+    private static final long MIN_TIME_BW_UPDATES = 20;
+    private static final int lim_accur_gps=12;
 
     MediaPlayer mp;
     float volumen_normal;
@@ -120,10 +120,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static Location lo=null;
     static Location dest=null;
 
-    TextView tvDistancia, tvPresicionGPS, tvPrueba;
+    TextView tvDistancia, tvPresicionGPS, tvPrueba, tvPres;
     boolean [] mem;
     boolean me2;
-    private static int conta;
+    private static int conta, conta_km;
     private int index;
     private float [] referencias={0,90, 180, -90,};
 
@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         me2=false;
 
         conta=0;
+        conta_km=0;
         index=0;
 
         setData_Audio(true);
@@ -173,16 +174,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         tvPresicionGPS=findViewById(R.id.tvPresicionGPS);
 
         tvPrueba=findViewById(R.id.tvPrueba);
+        tvPres=findViewById(R.id.tvPres);
 
 
         //inicialización del PID
         DataHolder.setPID(1,0,0);
         pid = new PID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
         pid.setOutputLimits(-100,100);
-        //pid.setSetpoint((double)lo.bearingTo(dest));
-        pid.setSetpoint(0);
-        pid.setOutputFilter(0.1);
-        volumen_normal=0.2f;
+        volumen_normal=0.0f;
         mp=MediaPlayer.create(this,R.raw.exercise);
         mp.setLooping(true);
 
@@ -242,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         break;
                     case "CanchaEPN":
-                        cargargpx("CanchaEPN2.gpx");
+                        cargargpx("CanchaEPN3.gpx");
                         DataHolder.setData("NULL");
 
                         break;
@@ -260,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         break;
                 }
 
-
             }
         };
         myTimer.scheduleAtFixedRate(t,0,1000);
@@ -269,11 +267,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             @Override
             public void run() { ;
             float copy=bearing_actual;
-                if(bearing_actual!=500&&comenzar==true&&getData_Audio())
+                if(copy!=500&&comenzar==true&&getData_Audio())
                 {
-                    Log.i("Controlador","1");
-                    if(copy>180) copy-=360;
-                    if (index<items.size()){
+                    if (index<(items.size()-1)){
                         sig_paso.setLatitude(items.get(index+1).getitemLatitud());
                         sig_paso.setLongitude(items.get(index+1).getitemLongitud());
                     }
@@ -282,21 +278,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         sig_paso.setLongitude(items.get(0).getitemLongitud());
                         index=0;
                     }
-
                     float ref= items.get(index).getitemBearing();
-                    //tvPrueba.setText("prueba");
                     float ref_dis=items.get(index).getItemDistancia();
                     float dis_dinamica=location.distanceTo(sig_paso);
 
-                   if(dis_dinamica<(0.5*ref_dis)){
+                   if(dis_dinamica<5){//(0.5*ref_dis)){
                            index++;
                    }
 
-                    pid.setSetpoint(ref);
-                    double ley=pid.getOutput((double) copy);
+                    double ley=pid.getOutput((double) copy,ref);
                     float error= (float) pid.getError();
-                    Log.d("Ley de control", String.valueOf(ley));
-                    float[] temp = funcion_sonido_pid((float) ley, volumen_normal * 100,error, -5,5);
+                    float[] temp = funcion_sonido_pid((float) ley, error, -5,5);
                     Log.d("Volumen r", String.valueOf(temp[0]));
                     Log.d("Volumen l", String.valueOf(temp[1]));
                     mp.setVolume(temp[1], temp[0]);
@@ -308,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         };
         myTimer2 = new Timer();
-        myTimer2.scheduleAtFixedRate(tt,0,50);
+        myTimer2.scheduleAtFixedRate(tt,0,60);
 
         toSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
             @Override
@@ -404,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
         //updateLocation(location);
-        //tvPresicionGPS.setText("GPS: "+location.getAccuracy());
+        tvPres.setText(String.format(" %.2f",location.getAccuracy()));
         this.location=location;
         if (on==0){
             updateLocation(location);
@@ -412,16 +404,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         if (location.hasBearing()){
             calculo_distancia(location);
-            bearing = location.getBearing();
             if(comenzar==true) {
                 bearing_actual = location.getBearing();
-                tvPresicionGPS.setText(String.format("Bac: %.2f", location.bearingTo(sig_paso)));
+                if(bearing_actual>180) bearing_actual-=360;
+                tvPresicionGPS.setText(String.format("Bac: %.2f",bearing_actual));
                 tvDistancia.setText(String.format("#: %d", index));
                 tvPrueba.setText(String.format("Bref : %.2f", items.get(index).getitemBearing()));
             }
         }
         else{
-            bearing=500;
+            bearing_actual=500;
         }
 
     }
@@ -444,14 +436,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private void updateLocation(Location location) {
         GeoPoint locGeoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
         mapController.setCenter(locGeoPoint);
-        Toast.makeText(getBaseContext(),locGeoPoint.getLatitude() + " - "+locGeoPoint.getLongitude(),Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getBaseContext(),locGeoPoint.getLatitude() + " - "+locGeoPoint.getLongitude(),Toast.LENGTH_SHORT).show();
         map.invalidate();
         if (location.hasBearing()==true) {
             direction=location.getBearing();
-            Toast.makeText(getBaseContext(),""+direction+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
+           // Toast.makeText(getBaseContext(),""+direction+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
         } else {
                    //no se ha cambiado la posición
-            Toast.makeText(getBaseContext(),"no tiene bearing"+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getBaseContext(),"no tiene bearing"+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -476,9 +468,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             lon_ant = lon_actual;
 
             if (dist>=(conta+1)*100){
-                verb_distancia((int)(conta+1)*100);
-                conta++;
+                if (dist>=(conta_km+1)*1000){
+                    alarta_km((int)(conta_km+1));
+                    conta_km++;
+                    conta++;
+                }
+                else {
+                    verb_distancia((int) (conta + 1) * 100);
+                    conta++;
+                }
             }
+
+
         }
     }
 
@@ -493,16 +494,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         finDate_km = new Date(fin_km);
         inicDate_km= new Date(inic_km);
         Map<TimeUnit,Long> result = computeDiff(inicDate_km, finDate_km);
-        String tem;
-        if (result.get(TimeUnit.MINUTES)<10)tem=":0%d";
-        else tem=":%d";
-        if (result.get(TimeUnit.SECONDS)<10)tem+=":0%d";
-        else tem+=":%d";
 
-        String tempo= String.format(tem,result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
-        String tempo1= String.format("Usted a recorrido %d kilometro en %",d  );
+        String tempo= String.format("%d minutos %d segundos",result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+        String tempo1= String.format("Kilometro %d, ritmo por kilometro"+tempo,d);
 
-        toSpeech.speak(tempo1+tempo,TextToSpeech.QUEUE_FLUSH,null);
+        toSpeech.speak(tempo1,TextToSpeech.QUEUE_FLUSH,null);
         toSpeech.playSilence(1000,TextToSpeech.QUEUE_ADD,null);
 
         inic_km=System.currentTimeMillis();
@@ -651,11 +647,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         else
             mapOverlays.add(1, mDestinationPolygon); //insert just above the MapEventsOverlay.
         setViewOn(bb);
+        mapController.setZoom(map.getZoomLevelDouble()-map.getZoomLevelDouble()*0.02);
+
         map.invalidate();
     }
     void setViewOn(BoundingBox bb){
         if (bb != null){
-            map.zoomToBoundingBox(bb, true);
+            map.zoomToBoundingBox(bb, false);
         }
     }
     private void FilePicker() {
@@ -732,14 +730,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             toSpeech.speak("Ahora",TextToSpeech.QUEUE_ADD,null);
                         }
 
-                        Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
                         millis_before = System.currentTimeMillis();
                         inic_km=millis_before;
                         startDateTime = new Date(millis_before);
                         mp.start();
                         comenzar=true;
                         conta=0;
-                        index=0;
+                        conta_km=0;
+                        index=near(items, location);
                         pid.setPID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
 
                     }
@@ -771,7 +770,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         String tempo1= String.format("La carrera ha terminado: Distancia recorrida %.2f km, Tiempo:", dist/1000);
                         String tempo2= String.format(tem2,dist/1000,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
 
-                        Toast.makeText(this, tempo1+tempo, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, tempo1+tempo, Toast.LENGTH_LONG).show();
                         dist=0;
 
                         if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
@@ -803,28 +802,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         return result;
     }
 
-    public  static  float[] funcion_sonido_pid(float ley, float maxV,float error, float hi, float hd)
+    public  static  float[] funcion_sonido_pid(float ley,float error, float hi, float hd)
     {
         float r;
         float l;
-        if (error<hi||error>hd)
-        {
-            r = maxV - ley;
-            if (r >= 100) r = 100;
-            else if (r < 0) r = 0;
 
-            l = maxV + ley;
-            if (l >= 100) l = 100;
-            else if (l < 0) l = 0;
+        if(ley>=0){
+            l =  ley;
+            r =  0.0f;
         }
-        else
-        {
-            r=maxV;
-            l=maxV;
+        else {
+            r =  -ley;
+            l =  0.0f;
         }
 
-        r= (float) (Math.pow(1/101.0,-r/100.0)-1)/100;
-        l= (float) (Math.pow(1/101.0,-l/100.0)-1)/100;
+        if(l<=50)  l= (float) (Math.pow(1/101.0,-l/50.0)-1)/100;
+        else l=100;
+
+        if(r<=50)  r= (float) (Math.pow(1/101.0,-r/50.0)-1)/100;
+        else r=100;
 
         return new float[] {l,r};
     }
@@ -839,6 +835,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
 
         mp.stop();
+    }
+
+    public int near(List<TrackPointsActivity> items, Location locationnow){
+
+        int minIndex = -1;
+        float minDist = 10000000; // initialize with a huge value that will be overwritten
+        Location targetLocation = new Location("");//provider name is unnecessary
+
+        for (int i = 0; i < items.size(); i++) {
+            targetLocation.setLatitude(items.get(i).getitemLatitud());//your coords of course
+            targetLocation.setLongitude(items.get(i).getitemLongitud());
+
+            float distanceInMeters =  locationnow.distanceTo(targetLocation);
+            if (distanceInMeters < minDist) {
+                minDist = distanceInMeters;  // update neares
+                minIndex = i;           // store index of nearest marker in minIndex
+            }
+        }
+        if(minIndex==(items.size()-1)) minIndex=-1;
+        return minIndex+1;  //si se le aumenta 1 se asegura q sea un punto adelante de la persona
     }
 }
 
