@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     Date startDateTime, endDateTime, finDate_km, inicDate_km;
     TextToSpeech toSpeech;
     int resultt;
-    float bearing=500;
     float bearing_actual=500;
     int tiempo=0;
 
@@ -113,24 +112,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private Location loc_anterior=new Location(LocationManager.GPS_PROVIDER);
 
     //Medicion de distancia
-    double lat_inicial, lon_inicial, lat_actual, lon_actual, lat_ant, lon_ant;
+    double lat_actual, lon_actual, lat_ant, lon_ant;
     float dist = 0;
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // in Meters
-    private static final long MIN_TIME_BW_UPDATES = 500;
-    private static final int lim_accur_gps=8;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
+    private static final long MIN_TIME_BW_UPDATES = 20;
+    private static final int lim_accur_gps=10;
 
     MediaPlayer mp;
-    float volumen_normal;
-    PID pid;
-    static Location lo=null;
-    static Location dest=null;
+    //PID pid;
 
-    TextView tv_bearing_real, tv_bearing_filtrado,tvlonlat_real,tvlonlat_filt, tv_near;
+
+    TextView tvDistancia, tvPresicionGPS, tvPrueba, tvPres;
     boolean [] mem;
     boolean me2;
-    private static int conta;
+    private static int conta, conta_km;
     private int index;
-    private float [] referencias={0,90, 180, -90,};
 
     KalmanLatLong kalmanFilter;
     float currentSpeed = 0.0f; // meters/second
@@ -140,27 +136,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //handle permissions first, before map is created. not depicted here
+
         DataHolder.setData("NULL");
-        //load/initialize the osmdroid configuration, this can be done
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        //setting this before the layout is inflated is a good idea
-        //it 'should' ensure that the map has a writable location for the map cache, even without permissions
-        //if no tiles are displayed, you can try overriding the cache path using Configuration.getInstance().setCachePath
-        //see also StorageUtils
-        //note, the load method also sets the HTTP User Agent to your application's package name, abusing osm's tile servers will get you banned based on this string
-
-        //inflate and create the map
         setContentView(R.layout.activity_main);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermission(this);
         }
-
-        SharedPreferences prefs = getSharedPreferences("OSMNAVIGATOR", MODE_PRIVATE);
-
-        kalmanFilter = new KalmanLatLong(3);
 
         //conectar layout
         btnMyLocation = findViewById(R.id.btnMyLocation);
@@ -168,51 +152,40 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         btnNavigation=findViewById(R.id.btnNavigation);
         btnNavigation.setOnClickListener(this);
         btnNavigation.hide();
+
+        tvDistancia= findViewById(R.id.tvDistancia);
+        tvDistancia.setText(String.format("#: %d",index));
+        tvPresicionGPS=findViewById(R.id.tvPresicionGPS);
+        tvPrueba=findViewById(R.id.tvPrueba);
+        tvPres=findViewById(R.id.tvPres);
+
         mem= new boolean[3];
         mem[0]=false;mem[1]=false;
         me2=false;
-
         conta=0;
+        conta_km=0;
         index=0;
 
         setData_Audio(true);
 
-
-        tv_bearing_real=findViewById(R.id.tv_bearing_real);
-        tv_bearing_filtrado=findViewById(R.id.tv_bearing_filtrado);
-        tvlonlat_real =findViewById(R.id.tvlonlat_real);
-        tvlonlat_filt =findViewById(R.id.tvlonlat_filt);
-        tv_near=findViewById(R.id.tv_near);
-
-
-
         //inicialización del PID
-        DataHolder.setPID(1,0,0);
+        /*DataHolder.setPID(1,0,0);
         pid = new PID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
         pid.setOutputLimits(-100,100);
-        //pid.setSetpoint((double)lo.bearingTo(dest));
-        pid.setSetpoint(0);
-        pid.setOutputFilter(0.1);
-        volumen_normal=0.2f;
+        volumen_normal=0.0f;¨*/
         mp=MediaPlayer.create(this,R.raw.exercise);
         mp.setLooping(true);
-
-
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.getOverlayManager().getTilesOverlay().setColorFilter(null);
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
         map.setMaxZoomLevel(20.0);
-
         mapController = map.getController();
         mapController.setZoom(19.0);
-        //GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
-        //mapController.setCenter(startPoint);
 
         //configuraciones de localización
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), map);
         mLocationOverlay.getLastFix();
         mLocationOverlay.setDrawAccuracyEnabled(true);
@@ -240,7 +213,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     tiempo=0;
                 }
 
-
                 switch (DataHolder.getData())
                 {
                     case "GPX":
@@ -253,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         break;
                     case "CanchaEPN":
-                        cargargpx("CanchaEPN2.gpx");
+                        cargargpx("CanchaEPN3.gpx");
                         DataHolder.setData("NULL");
 
                         break;
@@ -262,16 +234,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         DataHolder.setData("NULL");
                         break;
                     case "Estadioz":
-                        cargargpx("lamerced.gpx");
+                        cargargpx("alangasi.gpx");
                         DataHolder.setData("NULL");
                         break;
                     case "Estadiozz":
-                        cargargpx("lamerced2.gpx");
+                        cargargpx("alangasi2.gpx");
                         DataHolder.setData("NULL");
                         break;
                 }
-
-
             }
         };
         myTimer.scheduleAtFixedRate(t,0,1000);
@@ -280,11 +250,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             @Override
             public void run() { ;
             float copy=bearing_actual;
-                if(bearing_actual!=500&&comenzar==true&&getData_Audio())
+                if(copy!=500&&comenzar==true&&getData_Audio())
                 {
-                    Log.i("Controlador","1");
-                    if(copy>180) copy-=360;
-                    if (index<items.size()){
+                    if (index<(items.size()-1)){
                         sig_paso.setLatitude(items.get(index+1).getitemLatitud());
                         sig_paso.setLongitude(items.get(index+1).getitemLongitud());
                     }
@@ -293,33 +261,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         sig_paso.setLongitude(items.get(0).getitemLongitud());
                         index=0;
                     }
-
                     float ref= items.get(index).getitemBearing();
-                    //tvPrueba.setText("prueba");
                     float ref_dis=items.get(index).getItemDistancia();
                     float dis_dinamica=location.distanceTo(sig_paso);
 
-                   if(dis_dinamica<(0.5*ref_dis)){
+                   if(dis_dinamica<5){//(0.5*ref_dis)){
                            index++;
                    }
-
-                    pid.setSetpoint(ref);
-                    double ley=pid.getOutput((double) copy);
-                    float error= (float) pid.getError();
-                    Log.d("Ley de control", String.valueOf(ley));
-                    float[] temp = funcion_sonido_pid((float) ley, volumen_normal * 100,error, -5,5);
+                   //Controlador
+                    //double ley=pid.getOutput((double) copy,ref);
+                   // float error= (float) pid.getError();
+                    float[] temp = funcion_sonido_controlador(copy,ref,-5,5);
                     Log.d("Volumen r", String.valueOf(temp[0]));
                     Log.d("Volumen l", String.valueOf(temp[1]));
                     mp.setVolume(temp[1], temp[0]);
                 }
-
                 else{
                     mp.setVolume((float)0.0, (float)0.0);
                 }
             }
         };
         myTimer2 = new Timer();
-        myTimer2.scheduleAtFixedRate(tt,0,50);
+        myTimer2.scheduleAtFixedRate(tt,0,60);
 
         toSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
             @Override
@@ -415,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
         //updateLocation(location);
-        //tvPresicionGPS.setText("GPS: "+location.getAccuracy());
+        tvPres.setText(String.format(" %.2f",location.getAccuracy()));
         this.location=location;
 
         filterAndAddLocation(location);
@@ -428,16 +391,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         if (location.hasBearing()){
             calculo_distancia(location);
-            bearing = location.getBearing();
             if(comenzar==true) {
-                tv_bearing_filtrado.setText(String.format("B_f: %.2f",loc_filtrada.getBearing() ));
-                tv_bearing_real.setText(String.format("B_r: %.2f", bearing));
-                tvlonlat_real.setText(String.format(""+location.getLatitude()+";"+location.getLongitude()));
-                tvlonlat_filt.setText(String.format(""+loc_filtrada.getLatitude()+";"+loc_filtrada.getLongitude()));
+                bearing_actual = location.getBearing();
+                if(bearing_actual>180) bearing_actual-=360;
+
+                tvPresicionGPS.setText(String.format("Bac: %.2f",bearing_actual));
+                tvDistancia.setText(String.format("#: %d", index));
+                tvPrueba.setText(String.format("Bref : %.2f", items.get(index).getitemBearing()));
             }
         }
         else{
-            bearing=500;
+            bearing_actual=500;
         }
 
     }
@@ -533,14 +497,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private void updateLocation(Location location) {
         GeoPoint locGeoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
         mapController.setCenter(locGeoPoint);
-        Toast.makeText(getBaseContext(),locGeoPoint.getLatitude() + " - "+locGeoPoint.getLongitude(),Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getBaseContext(),locGeoPoint.getLatitude() + " - "+locGeoPoint.getLongitude(),Toast.LENGTH_SHORT).show();
         map.invalidate();
         if (location.hasBearing()==true) {
             direction=location.getBearing();
-            Toast.makeText(getBaseContext(),""+direction+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
+           // Toast.makeText(getBaseContext(),""+direction+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
         } else {
                    //no se ha cambiado la posición
-            Toast.makeText(getBaseContext(),"no tiene bearing"+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getBaseContext(),"no tiene bearing"+"o="+compassOverlay.getOrientation(),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -551,23 +515,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if(comenzar==true){
             float[] results = new float[1];
             Location.distanceBetween(lat_ant, lon_ant, lat_actual, lon_actual, results);
-            //etLocation.setText(" "+results[0]);
 
             if (location.getAccuracy()<=lim_accur_gps && results[0]<=10){
                 Location.distanceBetween(lat_ant, lon_ant, lat_actual, lon_actual, results);
-                //etLocation.setText(" "+results[0]);
                 dist = dist + results[0];
-                //etDistancia.setText(String.format("%1$s [m]", dist));
-                //tvDistancia.setText("Distancia: "+dist);
             }
 
             lat_ant = lat_actual;
             lon_ant = lon_actual;
 
             if (dist>=(conta+1)*100){
-                verb_distancia((int)(conta+1)*100);
-                conta++;
+                if (dist>=(conta_km+1)*1000){
+                    alarta_km((int)(conta_km+1));
+                    conta_km++;
+                    conta++;
+                }
+                else {
+                    verb_distancia((int) (conta + 1) * 100);
+                    conta++;
+                }
             }
+
+
         }
     }
 
@@ -582,16 +551,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         finDate_km = new Date(fin_km);
         inicDate_km= new Date(inic_km);
         Map<TimeUnit,Long> result = computeDiff(inicDate_km, finDate_km);
-        String tem;
-        if (result.get(TimeUnit.MINUTES)<10)tem=":0%d";
-        else tem=":%d";
-        if (result.get(TimeUnit.SECONDS)<10)tem+=":0%d";
-        else tem+=":%d";
 
-        String tempo= String.format(tem,result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
-        String tempo1= String.format("Usted a recorrido %d kilometro en %",d  );
+        String tempo= String.format("%d minutos %d segundos",result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
+        String tempo1= String.format("Kilometro %d, ritmo por kilometro"+tempo,d);
 
-        toSpeech.speak(tempo1+tempo,TextToSpeech.QUEUE_FLUSH,null);
+        toSpeech.speak(tempo1,TextToSpeech.QUEUE_FLUSH,null);
         toSpeech.playSilence(1000,TextToSpeech.QUEUE_ADD,null);
 
         inic_km=System.currentTimeMillis();
@@ -605,7 +569,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         runStartTimeInMillis = (long)(SystemClock.elapsedRealtimeNanos() / 1000000);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
     }
 
     public void onPause(){
@@ -701,8 +664,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             GeoPoint t = new GeoPoint(mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude());
             puntos.add(t);
         }
-        //String aux=String.format("La: %.2f,Lo: %.2f,B: %.2f,D: %.2f",items.get(5).getitemLatitud(),items.get(5).getitemLongitud(), items.get(5).getitemBearing(),items.get(5).getItemDistancia());
-
         updateUIWithPolygon(puntos,"ruta1");
         btnNavigation.show();
     }
@@ -758,8 +719,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             startActivityForResult(Intent.createChooser(target,"Seleccionar archivo"),PICKER);
         }catch (android.content.ActivityNotFoundException ex){
             Toast.makeText(this, "Instale un administrador de archivos.", Toast.LENGTH_SHORT);
-
-
         }
     }
 
@@ -796,9 +755,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     toSpeech.speak("Actualizando mí ubicación",TextToSpeech.QUEUE_FLUSH,null);
                     mem[0]=false;mem[1]=false;
                     me2=false;
-
                 }
-
                 break;
 
             case R.id.btnNavigation:
@@ -807,7 +764,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         toSpeech.speak("Botón de inicio de carrera",TextToSpeech.QUEUE_FLUSH,null);
                         mem[0]=true;mem[1]=false;
                         me2=false;
-
                     }
                     else{
                         mem[0]=false;mem[1]=false;
@@ -824,16 +780,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             toSpeech.playSilence(400,TextToSpeech.QUEUE_ADD,null);
                             toSpeech.speak("Ahora",TextToSpeech.QUEUE_ADD,null);
                         }
-
-                        Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "La carrera comienza Ahora", Toast.LENGTH_SHORT).show();
                         millis_before = System.currentTimeMillis();
                         inic_km=millis_before;
                         startDateTime = new Date(millis_before);
                         mp.start();
                         comenzar=true;
                         conta=0;
-                        index=0;
-                        pid.setPID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
+                        conta_km=0;
+                        index=near(items, location);
+                        //pid.setPID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
 
                     }
                 }
@@ -842,7 +798,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         toSpeech.speak("Botón de finalización de carrera",TextToSpeech.QUEUE_FLUSH,null);
                         mem[0]=false;mem[1]=true;
                         me2=false;
-
                     }
                     else{
                         mem[0]=false;mem[1]=false;
@@ -864,7 +819,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         String tempo1= String.format("La carrera ha terminado: Distancia recorrida %.2f km, Tiempo:", dist/1000);
                         String tempo2= String.format(tem2,dist/1000,result.get(TimeUnit.HOURS),result.get(TimeUnit.MINUTES),result.get(TimeUnit.SECONDS));
 
-                        Toast.makeText(this, tempo1+tempo, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, tempo1+tempo, Toast.LENGTH_LONG).show();
                         dist=0;
 
                         if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
@@ -872,11 +827,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         comenzar=false;
                         index=0;
-
                     }
-
                 }
-
                 break;
         }
     }
@@ -896,6 +848,42 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         return result;
     }
 
+    public  static  float[] funcion_sonido_controlador(float val_actual,float val_ref, float hi, float hd)
+    {
+        float r;
+        float l;
+        float error=val_actual-val_ref;
+
+        if(error>=0){
+            l =  error;
+            r =  0.0f;
+        }
+        else {
+            r =  -error;
+            l =  0.0f;
+        }
+
+        if(l<=50)  l= (float) (Math.pow(1/101.0,-l/90.0)-1)/100;
+        else l=100;
+
+        if(r<=50)  r= (float) (Math.pow(1/101.0,-r/90.0)-1)/100;
+        else r=100;
+
+        return new float[] {l,r};
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (toSpeech!=null)
+        {
+            toSpeech.stop();
+            toSpeech.shutdown();
+        }
+
+        mp.stop();
+    }
+
     public int near(List<TrackPointsActivity> items, Location locationnow){
 
         int minIndex = -1;
@@ -912,45 +900,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 minIndex = i;           // store index of nearest marker in minIndex
             }
         }
+        if(minIndex==(items.size()-1)) minIndex=-1;
         return minIndex+1;  //si se le aumenta 1 se asegura q sea un punto adelante de la persona
-    }
-
-    public  static  float[] funcion_sonido_pid(float ley, float maxV,float error, float hi, float hd)
-    {
-        float r;
-        float l;
-        if (error<hi||error>hd)
-        {
-            r = maxV - ley;
-            if (r >= 100) r = 100;
-            else if (r < 0) r = 0;
-
-            l = maxV + ley;
-            if (l >= 100) l = 100;
-            else if (l < 0) l = 0;
-        }
-        else
-        {
-            r=maxV;
-            l=maxV;
-        }
-
-        r= (float) (r/100.0);
-        l= (float) (l/100.0);
-
-        return new float[] {l,r};
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (toSpeech!=null)
-        {
-            toSpeech.stop();
-            toSpeech.shutdown();
-        }
-
-        mp.stop();
     }
 }
 
