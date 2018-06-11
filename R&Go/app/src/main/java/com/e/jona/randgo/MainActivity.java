@@ -251,11 +251,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         DataHolder.setData("NULL");
                         break;
                     case "Estadioz":
-                        cargargpx("lamerced.gpx");
+                        cargargpx("alangasi.gpx");
                         DataHolder.setData("NULL");
                         break;
                     case "Estadiozz":
-                        cargargpx("lamerced2.gpx");
+                        cargargpx("alangasi2.gpx");
                         DataHolder.setData("NULL");
                         break;
                 }
@@ -823,8 +823,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             l=maxV;
         }
 
-        r= (float) (r/100.0);
-        l= (float) (l/100.0);
+        r= (float) (Math.pow(1/101.0,-r/100.0)-1)/100;
+        l= (float) (Math.pow(1/101.0,-l/100.0)-1)/100;
 
         return new float[] {l,r};
     }
