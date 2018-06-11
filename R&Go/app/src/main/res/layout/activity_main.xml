@@ -19,17 +19,25 @@
 
         <TextView
             android:id="@+id/tv_bearing_real"
-            android:layout_width="200dp"
+            android:layout_width="120dp"
             android:layout_height="30dp"
             android:text="B_r: "
             android:textSize="20dp"/>
         <TextView
             android:id="@+id/tv_bearing_filtrado"
-            android:layout_width="150dp"
+            android:layout_width="120dp"
             android:layout_height="30dp"
             android:visibility="visible"
             android:text="B_f:"
             android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/tv_near"
+                android:layout_width="120dp"
+                android:layout_height="30dp"
+                android:visibility="visible"
+                android:text="N:"
+                android:textSize="20dp"/>
 
         </LinearLayout>
         <LinearLayout
@@ -63,8 +71,8 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnMyLocation"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_margin="10dp"
         android:gravity="center_horizontal"
         android:src="@drawable/ic_location_searching_white_24dp"
@@ -74,8 +82,8 @@
 
 
     <android.support.design.widget.FloatingActionButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_margin="10dp"

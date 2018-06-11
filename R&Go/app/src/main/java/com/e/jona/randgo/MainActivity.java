@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static Location lo=null;
     static Location dest=null;
 
-    TextView tv_bearing_real, tv_bearing_filtrado,tvlonlat_real,tvlonlat_filt;
+    TextView tv_bearing_real, tv_bearing_filtrado,tvlonlat_real,tvlonlat_filt, tv_near;
     boolean [] mem;
     boolean me2;
     private static int conta;
@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         tv_bearing_filtrado=findViewById(R.id.tv_bearing_filtrado);
         tvlonlat_real =findViewById(R.id.tvlonlat_real);
         tvlonlat_filt =findViewById(R.id.tvlonlat_filt);
+        tv_near=findViewById(R.id.tv_near);
 
 
 
@@ -740,11 +741,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         else
             mapOverlays.add(1, mDestinationPolygon); //insert just above the MapEventsOverlay.
         setViewOn(bb);
+        mapController.setZoom(map.getZoomLevelDouble()-map.getZoomLevelDouble()*0.02);
+
         map.invalidate();
     }
     void setViewOn(BoundingBox bb){
         if (bb != null){
-            map.zoomToBoundingBox(bb, true);
+            map.zoomToBoundingBox(bb, false);
         }
     }
     private void FilePicker() {
@@ -810,6 +813,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         mem[0]=false;mem[1]=false;
                         me2=false;
 
+                        tv_near.setText(""+"N:"+ near(items, location) );
                         if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
                         else{
                             toSpeech.speak("La carrera comienza en 3",TextToSpeech.QUEUE_FLUSH,null);
