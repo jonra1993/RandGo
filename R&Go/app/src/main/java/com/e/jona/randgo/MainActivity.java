@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private List<TrackPointsActivity> items = new ArrayList<TrackPointsActivity>();
     private Location posi_act=new Location(LocationManager.GPS_PROVIDER);
     private Location posi_sig=new Location(LocationManager.GPS_PROVIDER);
+    private Location posi_ant=new Location(LocationManager.GPS_PROVIDER);
     private Location sig_paso=new Location(LocationManager.GPS_PROVIDER);
 
     //Medicion de distancia
@@ -124,6 +125,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private static int conta, conta_km;
     private int index;
 
+    float ref_sigPunto,aux_idex;
+    double ref_ortogonal;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,9 +141,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //Modificar ToolBar
         android.support.v7.widget.Toolbar my_toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(my_toolbar);
-        //getSupportActionBar().setTitle(R.string.nombre);
-        getSupportActionBar().setLogo(R.drawable.ic_toolbar);
-        //getSupportActionBar().setIcon(R.drawable.ic_toolbar);
+        getSupportActionBar().setIcon(R.drawable.ic_toolbar);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -262,12 +264,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         index=0;
                     }
                     float ref= items.get(index).getitemBearing();
-                    float ref_dis=items.get(index).getItemDistancia();
                     float dis_dinamica=location.distanceTo(sig_paso);
 
-                   if(dis_dinamica<5){//(0.5*ref_dis)){
-                           index++;
-                   }
+                    //Algoritmo parar seleccion de nuevo punto en la pista
+                    ref_sigPunto=items.get(index).getitemBearing_ant();                               //Angulo bearing al punto anterior
+                    ref_ortogonal=Math.toDegrees(Math.atan(-1/(Math.toRadians(ref_sigPunto))));      //angulo ortogonal de ref_sigPunto
+                    aux_idex=sig_paso.bearingTo(location);
+
+                    if(ref_sigPunto>=0 && ref_sigPunto<90) {
+                        if(!(aux_idex>360+ref_ortogonal || aux_idex<180+ref_ortogonal)) index++;
+                    }
+                    else if(ref_sigPunto>=90 && ref_sigPunto<180){
+                        if(!(aux_idex>180+ref_ortogonal || aux_idex<ref_ortogonal)) index++;
+                    }
+                    else if (ref_sigPunto>=180 && ref_sigPunto<270){
+                        if(!(aux_idex>180+ref_ortogonal && aux_idex<360+ref_ortogonal)) index++;
+                    }
+                    else{
+                        if(!(aux_idex>ref_ortogonal || aux_idex<180+ref_ortogonal)) index++;
+                    }
+
                    //Controlador
                     //double ley=pid.getOutput((double) copy,ref);
                    // float error= (float) pid.getError();
@@ -378,7 +394,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
         //updateLocation(location);
-        tvPres.setText(String.format(" %.2f",location.getAccuracy()));
         this.location=location;
         if (on==0){
             updateLocation(location);
@@ -388,11 +403,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             calculo_distancia(location);
             if(comenzar==true) {
                 bearing_actual = location.getBearing();
-                if(bearing_actual>180) bearing_actual-=360;
-
-                tvPresicionGPS.setText(String.format("Bac: %.2f",bearing_actual));
+                tvPresicionGPS.setText(String.format("Bant: %.2f",ref_sigPunto));
                 tvDistancia.setText(String.format("#: %d", index));
-                tvPrueba.setText(String.format("Bref : %.2f", items.get(index).getitemBearing()));
+                tvPrueba.setText(String.format("Bm : %.2f",aux_idex));
+                tvPres.setText(String.format(" %.2f",ref_ortogonal));
             }
         }
         else{
@@ -552,6 +566,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onGpxParseCompleted(GPXDocument document) {
         mProgressDialog.dismiss();
         float val_bearing;
+        float val_bearing_ant;
         float val_distancia;
 
         items.clear();              //Limpiar Lista de calse
@@ -562,6 +577,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         for (int i = 0; i<(mPoints.size()); i++)
         {
             if(i<(mPoints.size()-1)){
+                if(i==0){
+                    posi_ant.setLatitude(mPoints.get(mPoints.size()-1).getLatitude());
+                    posi_ant.setLongitude(mPoints.get(mPoints.size()-1).getLongitude());
+                }
+                else {
+                    posi_ant.setLatitude(mPoints.get(i-1).getLatitude());
+                    posi_ant.setLongitude(mPoints.get(i-1).getLongitude());
+                }
                 posi_act.setLatitude(mPoints.get(i).getLatitude());
                 posi_act.setLongitude(mPoints.get(i).getLongitude());
 
@@ -577,9 +600,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
 
             val_bearing=posi_act.bearingTo(posi_sig);
+            if(val_bearing<0) val_bearing+=360;
             val_distancia=posi_act.distanceTo(posi_sig);
 
-            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia);
+            val_bearing_ant=posi_act.bearingTo(posi_ant);
+            if(val_bearing_ant<0.0f) val_bearing_ant+=360;
+
+            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia, val_bearing_ant);
             items.add(coord);
 
             GeoPoint t = new GeoPoint(mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude());
@@ -773,14 +800,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         float r;
         float l;
         float error=val_actual-val_ref;
+        if (error>180) error-=360;
+        else if (error<-180) error+=360;
 
         if(error>=0){
-            l =  error;
-            r =  0.0f;
+            r =  error;
+            l =  0.0f;
         }
         else {
-            r =  -error;
-            l =  0.0f;
+            l =  -error;
+            r =  0.0f;
         }
 
         if(l<=50)  l= (float) (Math.pow(1/101.0,-l/90.0)-1)/100;

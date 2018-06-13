@@ -26,7 +26,7 @@
         </activity>
         <activity
             android:name=".OptionsActivity"
-            android:theme="@style/Tema_inicio"
+            android:theme="@style/Tema_Home"
             android:label="Configuración"
             android:screenOrientation="portrait">
         </activity>
