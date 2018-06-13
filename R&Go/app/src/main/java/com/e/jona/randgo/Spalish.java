@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class Spalish extends AppCompatActivity {
 
-    RelativeLayout relat1;
+    RelativeLayout relat1, relatline;
 
     TextToSpeech toSpeech;
     int resultt;
@@ -35,7 +35,7 @@ public class Spalish extends AppCompatActivity {
         @Override
         public void run() {
             relat1.setVisibility(View.VISIBLE);
-
+            relatline.setVisibility(View.VISIBLE);
         }
     };
     @Override
@@ -49,7 +49,8 @@ public class Spalish extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
-        relat1= (RelativeLayout) findViewById(R.id.relat1);
+        relat1= findViewById(R.id.relat1);
+        relatline= findViewById(R.id.relatline);
 
         tvInicio=findViewById(R.id.tvInicio);
         //iv=findViewById(R.id.iv);
