@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.codebutchery.androidgpx.data.GPXDocument;
 import com.codebutchery.androidgpx.data.GPXRoute;
@@ -132,6 +133,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.activity_main);
+
+        //Modificar ToolBar
+        android.support.v7.widget.Toolbar my_toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(my_toolbar);
+        //getSupportActionBar().setTitle(R.string.nombre);
+        getSupportActionBar().setLogo(R.drawable.ic_toolbar);
+        //getSupportActionBar().setIcon(R.drawable.ic_toolbar);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermission(this);

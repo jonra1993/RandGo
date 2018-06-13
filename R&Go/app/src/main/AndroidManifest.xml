@@ -14,14 +14,15 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher2"
-        android:label="@string/nombre"
+        android:label=""
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Tema_inicio">
+            android:label="@string/nombre"
+            android:theme="@style/Tema_Home">
         </activity>
         <activity
             android:name=".OptionsActivity"
