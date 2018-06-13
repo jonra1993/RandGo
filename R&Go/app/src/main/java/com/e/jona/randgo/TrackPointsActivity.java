@@ -5,16 +5,16 @@ public class TrackPointsActivity {
     private float itemLatitud;
     private float itemLongitud;
     private float itemBearing;
-    private float itemBearing_ant;
+    private float itemTeta;
     private float itemDistancia;
 
-    public TrackPointsActivity(int num, float lat, float lon, float bearing, float dista, float bearing_ant) {
+    public TrackPointsActivity(int num, float lat, float lon, float bearing, float dista, float itemTeta) {
         this.itemNumber = num;
         this.itemLatitud = lat;
         this.itemLongitud =lon;
         this.itemBearing = bearing;
         this.itemDistancia=dista;
-        this.itemBearing_ant=bearing_ant;
+        this.itemTeta=itemTeta;
     }
 
     public int getitemNumber() {
@@ -33,8 +33,8 @@ public class TrackPointsActivity {
         return this.itemBearing;
     }
 
-    public float getitemBearing_ant() {
-        return this.itemBearing_ant;
+    public float get_teta() {
+        return this.itemTeta;
     }
 
     public float getItemDistancia() {

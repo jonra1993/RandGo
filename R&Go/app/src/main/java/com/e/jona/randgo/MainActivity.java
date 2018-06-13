@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private static int conta, conta_km;
     private int index;
 
-    float ref_sigPunto,aux_idex;
-    double ref_ortogonal;
+    float teta1,aux_idex;
+    double teta2;
 
 
     @Override
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         pid = new PID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
         pid.setOutputLimits(-100,100);
         volumen_normal=0.0f;¨*/
-        mp=MediaPlayer.create(this,R.raw.exercise);
+        mp=MediaPlayer.create(this,R.raw.sinsilencio);
         mp.setLooping(true);
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -267,26 +267,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     float dis_dinamica=location.distanceTo(sig_paso);
 
                     //Algoritmo parar seleccion de nuevo punto en la pista
-                    ref_sigPunto=items.get(index).getitemBearing_ant();                               //Angulo bearing al punto anterior
-                    ref_ortogonal=Math.toDegrees(Math.atan(-1/(Math.toRadians(ref_sigPunto))));      //angulo ortogonal de ref_sigPunto
+                    teta1=items.get(index).get_teta();                               //Angulo bearing al punto anterior
+                    teta2=Math.toDegrees(Math.atan(-1/(Math.toRadians(teta1))));      //angulo ortogonal de ref_sigPunto
                     aux_idex=sig_paso.bearingTo(location);
 
-                    if(ref_sigPunto>=0 && ref_sigPunto<90) {
-                        if(!(aux_idex>360+ref_ortogonal || aux_idex<180+ref_ortogonal)) index++;
+                    //le cambié estaban mal los casos  y no entiendo
+                    if(teta1>=0 && teta1<90) { //primer cuadrante
+                        if(!(aux_idex>360+teta2 || aux_idex<180+teta2)) index++;
                     }
-                    else if(ref_sigPunto>=90 && ref_sigPunto<180){
-                        if(!(aux_idex>180+ref_ortogonal || aux_idex<ref_ortogonal)) index++;
+                    else if(teta1>=90 && teta1<180){ //cuarto cuadrante
+                        if(!(aux_idex>teta2 && aux_idex<180+teta2)) index++;
                     }
-                    else if (ref_sigPunto>=180 && ref_sigPunto<270){
-                        if(!(aux_idex>180+ref_ortogonal && aux_idex<360+ref_ortogonal)) index++;
+                    else if (teta1>=180 && teta1<270){ //tercer cuadrante
+                        if(!(aux_idex>180+teta2 && aux_idex<360+teta2)) index++;
                     }
-                    else{
-                        if(!(aux_idex>ref_ortogonal || aux_idex<180+ref_ortogonal)) index++;
+                    else{ //segundo cuadrante
+                        if(!(aux_idex>180+teta2 || aux_idex<teta2)) index++;
                     }
 
                    //Controlador
-                    //double ley=pid.getOutput((double) copy,ref);
-                   // float error= (float) pid.getError();
                     float[] temp = funcion_sonido_controlador(copy,ref,-5,5);
                     Log.d("Volumen r", String.valueOf(temp[0]));
                     Log.d("Volumen l", String.valueOf(temp[1]));
@@ -403,10 +402,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             calculo_distancia(location);
             if(comenzar==true) {
                 bearing_actual = location.getBearing();
-                tvPresicionGPS.setText(String.format("Bant: %.2f",ref_sigPunto));
+                tvPresicionGPS.setText(String.format("Bant: %.2f",teta1));
                 tvDistancia.setText(String.format("#: %d", index));
                 tvPrueba.setText(String.format("Bm : %.2f",aux_idex));
-                tvPres.setText(String.format(" %.2f",ref_ortogonal));
+                tvPres.setText(String.format(" %.2f",teta2));
             }
         }
         else{
@@ -566,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onGpxParseCompleted(GPXDocument document) {
         mProgressDialog.dismiss();
         float val_bearing;
-        float val_bearing_ant;
+        float teta;
         float val_distancia;
 
         items.clear();              //Limpiar Lista de calse
@@ -603,10 +602,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             if(val_bearing<0) val_bearing+=360;
             val_distancia=posi_act.distanceTo(posi_sig);
 
-            val_bearing_ant=posi_act.bearingTo(posi_ant);
-            if(val_bearing_ant<0.0f) val_bearing_ant+=360;
+            //deberia ser posi_sig to posic_actual solo al reves
+            teta=posi_sig.bearingTo(posi_act);
+            if(teta<0.0f) teta+=360;
 
-            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia, val_bearing_ant);
+            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia, teta);
             items.add(coord);
 
             GeoPoint t = new GeoPoint(mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude());
