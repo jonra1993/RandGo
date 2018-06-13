@@ -21,7 +21,8 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Tema_inicio">
+            android:label="@string/nombre"
+            android:theme="@style/Tema_Home">
         </activity>
         <activity
             android:name=".OptionsActivity"
