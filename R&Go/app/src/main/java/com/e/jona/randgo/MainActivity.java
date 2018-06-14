@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         index=0;
                     }
                     float ref= items.get(index).getitemBearing();
-                    float dis_dinamica=location.distanceTo(sig_paso);
+                    //float dis_dinamica=location.distanceTo(sig_paso);
 
                     //Algoritmo parar seleccion de nuevo punto en la pista
                     teta1=items.get(index).get_teta();                               //Angulo bearing al punto anterior
