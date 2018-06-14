@@ -25,7 +25,6 @@ import static com.e.jona.randgo.DataHolder.setData_Audio;
 public class OptionsActivity extends AppCompatActivity implements View.OnClickListener{
 
     Button b_cargar_gpx,b_carolina,b_estadiox, b_estadioy, btestadio3,btestadio4;
-    EditText etP,etI,etD;
     TextToSpeech toSpeech;
     int resultt;
     public boolean [] mem;
@@ -37,15 +36,6 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
-
-        etP=findViewById(R.id.etP);
-        etI=findViewById(R.id.etI);
-        etD=findViewById(R.id.etD);
-
-        etP.setText((String.format("%.2f",DataHolder.getPID_P())).replace(',','.'));
-        etI.setText(String.format("%.2f",DataHolder.getPID_I()).replace(',','.'));
-        etD.setText(String.format("%.2f",DataHolder.getPID_D()).replace(',','.'));
-
 
         mem= new boolean[5];
         mem[0]=false;
@@ -70,7 +60,10 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         if(getData_Audio()) checkbox1.setChecked(true);
         else checkbox1.setChecked(false);
 
-
+        //Modificar ToolBar
+        android.support.v7.widget.Toolbar toolbar_conf=findViewById(R.id.toolbar_conf);
+        setSupportActionBar(toolbar_conf);
+        getSupportActionBar().setIcon(R.drawable.ic_toolbar);
 
 
         toSpeech = new TextToSpeech(OptionsActivity.this, new TextToSpeech.OnInitListener() {
@@ -110,9 +103,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
             }
         };
         myTimer.scheduleAtFixedRate(t,0,1000);
-
     }
-
 
     @Override
     public void onClick(View view) {
@@ -236,12 +227,6 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         }
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        DataHolder.setPID(Float.parseFloat(etP.getText().toString()),Float.parseFloat(etI.getText().toString()),Float.parseFloat(etD.getText().toString()));
-    }
-
 }
 
 

@@ -32,7 +32,7 @@
             android:layout_below="@+id/img_corredores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tvInicio"
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_below="@+id/relat1"
             android:background="@drawable/ic_base"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_height="60dp">
 
         </RelativeLayout>

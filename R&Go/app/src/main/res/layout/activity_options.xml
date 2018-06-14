@@ -5,7 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:theme="@style/Tema_Home"
     tools:context=".OptionsActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_conf"
+        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        app:titleTextColor="@color/colorIniWhite"
+        android:background="@drawable/grad_big" />
 
     <TextView
         android:id="@+id/tit1"
@@ -52,6 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="ESTADIO ALANGASI"
+        android:visibility="visible"
         android:textSize="28dp"
         />
     <Button
@@ -60,6 +69,7 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:visibility="visible"
         android:text="ESTADIO ALANGASI 2"
         android:textSize="28dp"
         />
@@ -91,62 +101,14 @@
         android:text="Habilitar Audio Guía"
         />
 
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:orientation="horizontal"
-        android:gravity="center"
-    android:layout_height="80dp">
-    <EditText
-        android:id="@+id/etP"
-        android:inputType="numberDecimal"
-        android:layout_width="50dp"
-        android:layout_height="50dp">
-
-    </EditText>
-        <TextView
-            android:id="@+id/tvP"
-            android:layout_width="30dp"
-            android:textSize="20dp"
-            android:text="P"
-            android:layout_height="50dp" />
-
-        <EditText
-            android:id="@+id/etI"
-            android:inputType="numberDecimal"
-            android:layout_width="50dp"
-            android:layout_height="50dp">
-
-        </EditText>
-        <TextView
-            android:id="@+id/tvI"
-            android:layout_width="30dp"
-            android:textSize="20dp"
-            android:text="I "
-            android:layout_height="30dp" />
-
-        <EditText
-            android:id="@+id/etD"
-            android:inputType="numberDecimal"
-            android:layout_width="50dp"
-            android:layout_height="50dp">
-
-        </EditText>
-        <TextView
-            android:id="@+id/tvD"
-            android:layout_width="30dp"
-            android:textSize="20dp"
-            android:text="D "
-            android:layout_height="30dp" />
-
-</LinearLayout>
-
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Desarrollado por: Jonathan Vargas y Diego Navas "
-        android:textSize="12dp"
+        android:textSize="16dp"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="5dp"
+        android:gravity="center_horizontal"
         />
+
 </LinearLayout>

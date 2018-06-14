@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private List<TrackPointsActivity> items = new ArrayList<TrackPointsActivity>();
     private Location posi_act=new Location(LocationManager.GPS_PROVIDER);
     private Location posi_sig=new Location(LocationManager.GPS_PROVIDER);
+    private Location posi_ant=new Location(LocationManager.GPS_PROVIDER);
     private Location sig_paso=new Location(LocationManager.GPS_PROVIDER);
     private Location loc_filtrada=new Location(LocationManager.GPS_PROVIDER);
     private Location loc_anterior=new Location(LocationManager.GPS_PROVIDER);
@@ -129,9 +130,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private static int conta, conta_km;
     private int index;
 
-    KalmanLatLong kalmanFilter;
-    float currentSpeed = 0.0f; // meters/second
-    long runStartTimeInMillis;
+    float teta1,aux_idex;
+    double teta2;
 
 
     @Override
@@ -146,9 +146,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //Modificar ToolBar
         android.support.v7.widget.Toolbar my_toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(my_toolbar);
-        //getSupportActionBar().setTitle(R.string.nombre);
-        getSupportActionBar().setLogo(R.drawable.ic_toolbar);
-        //getSupportActionBar().setIcon(R.drawable.ic_toolbar);
+        getSupportActionBar().setIcon(R.drawable.ic_toolbar);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -182,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         pid = new PID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
         pid.setOutputLimits(-100,100);
         volumen_normal=0.0f;¨*/
-        mp=MediaPlayer.create(this,R.raw.exercise);
+        mp=MediaPlayer.create(this,R.raw.sinsilencio);
         mp.setLooping(true);
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -271,15 +269,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         index=0;
                     }
                     float ref= items.get(index).getitemBearing();
-                    float ref_dis=items.get(index).getItemDistancia();
-                    float dis_dinamica=location.distanceTo(sig_paso);
+                    //float dis_dinamica=location.distanceTo(sig_paso);
 
-                   if(dis_dinamica<5){//(0.5*ref_dis)){
-                           index++;
-                   }
+                    //Algoritmo parar seleccion de nuevo punto en la pista
+                    teta1=items.get(index).get_teta();                               //Angulo bearing al punto anterior
+                    teta2=Math.toDegrees(Math.atan(-1/(Math.toRadians(teta1))));      //angulo ortogonal de ref_sigPunto
+                    aux_idex=sig_paso.bearingTo(location);
+
+                    //le cambié estaban mal los casos  y no entiendo
+                    if(teta1>=0 && teta1<90) { //primer cuadrante
+                        if(!(aux_idex>360+teta2 || aux_idex<180+teta2)) index++;
+                    }
+                    else if(teta1>=90 && teta1<180){ //cuarto cuadrante
+                        if(!(aux_idex>teta2 && aux_idex<180+teta2)) index++;
+                    }
+                    else if (teta1>=180 && teta1<270){ //tercer cuadrante
+                        if(!(aux_idex>180+teta2 && aux_idex<360+teta2)) index++;
+                    }
+                    else{ //segundo cuadrante
+                        if(!(aux_idex>180+teta2 || aux_idex<teta2)) index++;
+                    }
+
                    //Controlador
-                    //double ley=pid.getOutput((double) copy,ref);
-                   // float error= (float) pid.getError();
                     float[] temp = funcion_sonido_controlador(copy,ref,-5,5);
                     Log.d("Volumen r", String.valueOf(temp[0]));
                     Log.d("Volumen l", String.valueOf(temp[1]));
@@ -387,7 +398,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
         //updateLocation(location);
-        tvPres.setText(String.format(" %.2f",location.getAccuracy()));
         this.location=location;
 
         filterAndAddLocation(location);
@@ -402,11 +412,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             calculo_distancia(location);
             if(comenzar==true) {
                 bearing_actual = location.getBearing();
-                if(bearing_actual>180) bearing_actual-=360;
-
-                tvPresicionGPS.setText(String.format("Bac: %.2f",bearing_actual));
+                tvPresicionGPS.setText(String.format("Bant: %.2f",teta1));
                 tvDistancia.setText(String.format("#: %d", index));
-                tvPrueba.setText(String.format("Bref : %.2f", items.get(index).getitemBearing()));
+                tvPrueba.setText(String.format("Bm : %.2f",aux_idex));
+                tvPres.setText(String.format(" %.2f",teta2));
             }
         }
         else{
@@ -640,6 +649,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onGpxParseCompleted(GPXDocument document) {
         mProgressDialog.dismiss();
         float val_bearing;
+        float teta;
         float val_distancia;
 
         items.clear();              //Limpiar Lista de calse
@@ -650,6 +660,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         for (int i = 0; i<(mPoints.size()); i++)
         {
             if(i<(mPoints.size()-1)){
+                if(i==0){
+                    posi_ant.setLatitude(mPoints.get(mPoints.size()-1).getLatitude());
+                    posi_ant.setLongitude(mPoints.get(mPoints.size()-1).getLongitude());
+                }
+                else {
+                    posi_ant.setLatitude(mPoints.get(i-1).getLatitude());
+                    posi_ant.setLongitude(mPoints.get(i-1).getLongitude());
+                }
                 posi_act.setLatitude(mPoints.get(i).getLatitude());
                 posi_act.setLongitude(mPoints.get(i).getLongitude());
 
@@ -665,9 +683,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
 
             val_bearing=posi_act.bearingTo(posi_sig);
+            if(val_bearing<0) val_bearing+=360;
             val_distancia=posi_act.distanceTo(posi_sig);
 
-            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia);
+            //deberia ser posi_sig to posic_actual solo al reves
+            teta=posi_sig.bearingTo(posi_act);
+            if(teta<0.0f) teta+=360;
+
+            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia, teta);
             items.add(coord);
 
             GeoPoint t = new GeoPoint(mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude());
@@ -862,14 +885,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         float r;
         float l;
         float error=val_actual-val_ref;
+        if (error>180) error-=360;
+        else if (error<-180) error+=360;
 
         if(error>=0){
-            l =  error;
-            r =  0.0f;
+            r =  error;
+            l =  0.0f;
         }
         else {
-            r =  -error;
-            l =  0.0f;
+            l =  -error;
+            r =  0.0f;
         }
 
         if(l<=50)  l= (float) (Math.pow(1/101.0,-l/90.0)-1)/100;

@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private Location location;
     private Location posi_act=new Location(LocationManager.GPS_PROVIDER);
     private Location posi_sig=new Location(LocationManager.GPS_PROVIDER);
+    private Location posi_ant=new Location(LocationManager.GPS_PROVIDER);
+
 
     int posit=0;
 
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         lwPuntosGPS=(ListView) findViewById(R.id.lwPuntosGPS);
 
-        cargargpx("CanchaEPN2.gpx");
+        cargargpx("CanchaEPN3.gpx");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -119,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onGpxParseCompleted(GPXDocument document) {
         mProgressDialog.dismiss();
         float val_bearing;
+        float val_bearing_ant;
         float val_distancia;
 
         mPoints=document.getTracks().get(0).getSegments().get(0).getTrackPoints(); //Poner puntos en la lista
@@ -126,6 +129,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         for (int i = 0; i<(mPoints.size()); i++)
         {
             if(i<(mPoints.size()-1)){
+                if(i==0){
+                    posi_ant.setLatitude(mPoints.get(mPoints.size()-1).getLatitude());
+                    posi_ant.setLongitude(mPoints.get(mPoints.size()-1).getLongitude());
+                }
+                else {
+                    posi_ant.setLatitude(mPoints.get(i-1).getLatitude());
+                    posi_ant.setLongitude(mPoints.get(i-1).getLongitude());
+                }
+
                 posi_act.setLatitude(mPoints.get(i).getLatitude());
                 posi_act.setLongitude(mPoints.get(i).getLongitude());
 
@@ -133,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 posi_sig.setLongitude(mPoints.get(i+1).getLongitude());
             }
             else {
+                posi_ant.setLatitude(mPoints.get(i-1).getLatitude());
+                posi_ant.setLongitude(mPoints.get(i-1).getLongitude());
+
                 posi_act.setLatitude(mPoints.get(i).getLatitude());
                 posi_act.setLongitude(mPoints.get(i).getLongitude());
 
@@ -142,8 +157,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
             val_bearing=posi_act.bearingTo(posi_sig);
             val_distancia=posi_act.distanceTo(posi_sig);
+            val_bearing_ant=posi_act.bearingTo(posi_ant);
+            if(val_bearing_ant<0.0f) val_bearing_ant+=360;
 
-            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia);
+
+            TrackPointsActivity coord= new TrackPointsActivity(i,mPoints.get(i).getLatitude(), mPoints.get(i).getLongitude(),val_bearing , val_distancia,val_bearing_ant);
             items.add(coord);
         }
 
@@ -179,11 +197,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 TextView tvLat_Long = v.findViewById(R.id.tvLat_Long);
                 TextView tvBearing = v.findViewById(R.id.tvLBearing);
                 TextView tvDistancia = v.findViewById(R.id.tvDistancia);
+                TextView tvBearing_ant=v.findViewById(R.id.tvBearing_ant);
 
                 tvNumero.setText(String.format("Punto: %d", currentItem.getitemNumber()));
                 tvLat_Long.setText(String.format("Lati: %f, Long: %f",currentItem.getitemLatitud(),currentItem.getitemLongitud()));
                 tvBearing.setText(String.format("Bearing : %f",currentItem.getitemBearing()));
                 tvDistancia.setText(String.format("Distancia alsig punto: %f",currentItem.getItemDistancia()));
+                tvBearing_ant.setText(String.format("Bearing ant: %.2f",currentItem.getitemBearing_ant()));
 
                 return v;
             }
