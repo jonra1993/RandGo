@@ -260,8 +260,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 if(copy!=500&&comenzar==true&&getData_Audio())
                 {
                     if (index<(items.size()-1)){
-                        sig_paso.setLatitude(items.get(index+1).getitemLatitud());
-                        sig_paso.setLongitude(items.get(index+1).getitemLongitud());
+                        sig_paso.setLatitude(items.get(index).getitemLatitud());
+                        sig_paso.setLongitude(items.get(index).getitemLongitud());
                     }
                     else {
                         sig_paso.setLatitude(items.get(0).getitemLatitud());
@@ -272,21 +272,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     //float dis_dinamica=location.distanceTo(sig_paso);
 
                     //Algoritmo parar seleccion de nuevo punto en la pista
-                    teta1=items.get(index).get_teta();              //Angulo bearing al punto anterior va de -180 a 180
+                    teta1=items.get(index).get_teta();              //Angulo bearing al punto anterior va de 0 a 360
                     teta2=Math.toDegrees(Math.atan(-1/(Math.toRadians(teta1))));      //angulo ortogonal de ref_sigPunto
-                    aux_idex=sig_paso.bearingTo(location);
+                    aux_idex=sig_paso.bearingTo(location);  //va de -180 a 180
 
                     //le cambié estaban mal los casos  y no entiendo
                     if(teta1>=0 && teta1<90) { //primer cuadrante
                         if(!(aux_idex>teta2 && aux_idex<teta2+180)) index++;
                     }
-                    else if (teta1<0 && teta1>=-90){ //segundo cuadrante
+                    else if (teta1<=270 && teta1<360){ //segundo cuadrante
                         if(!(aux_idex>teta2 || aux_idex>teta2+180)) index++;
                     }
-                    else if (teta1<-90 && teta1>-180){ //tercer cuadrante
+                    else if (teta1<=180 && teta1<270){ //tercer cuadrante
                         if(!(aux_idex<teta2||aux_idex>teta2+180)) index++;
                     }
-                    else if(teta1>=90 && teta1<=180){ //cuarto cuadrante
+                    else if(teta1>=90 && teta1<180){ //cuarto cuadrante
                         if(!(aux_idex>teta2 || aux_idex<180+teta2)) index++;
                     }
 
