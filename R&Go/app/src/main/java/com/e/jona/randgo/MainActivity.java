@@ -272,22 +272,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     //float dis_dinamica=location.distanceTo(sig_paso);
 
                     //Algoritmo parar seleccion de nuevo punto en la pista
-                    teta1=items.get(index).get_teta();                               //Angulo bearing al punto anterior
+                    teta1=items.get(index).get_teta();              //Angulo bearing al punto anterior va de -180 a 180
                     teta2=Math.toDegrees(Math.atan(-1/(Math.toRadians(teta1))));      //angulo ortogonal de ref_sigPunto
                     aux_idex=sig_paso.bearingTo(location);
 
                     //le cambié estaban mal los casos  y no entiendo
                     if(teta1>=0 && teta1<90) { //primer cuadrante
-                        if(!(aux_idex>360+teta2 || aux_idex<180+teta2)) index++;
+                        if(!(aux_idex>teta2 && aux_idex<teta2+180)) index++;
                     }
-                    else if(teta1>=90 && teta1<180){ //cuarto cuadrante
-                        if(!(aux_idex>teta2 && aux_idex<180+teta2)) index++;
+                    else if (teta1<0 && teta1>=-90){ //segundo cuadrante
+                        if(!(aux_idex>teta2 || aux_idex>teta2+180)) index++;
                     }
-                    else if (teta1>=180 && teta1<270){ //tercer cuadrante
-                        if(!(aux_idex>180+teta2 && aux_idex<360+teta2)) index++;
+                    else if (teta1<-90 && teta1>-180){ //tercer cuadrante
+                        if(!(aux_idex<teta2||aux_idex>teta2+180)) index++;
                     }
-                    else{ //segundo cuadrante
-                        if(!(aux_idex>180+teta2 || aux_idex<teta2)) index++;
+                    else if(teta1>=90 && teta1<=180){ //cuarto cuadrante
+                        if(!(aux_idex>teta2 || aux_idex<180+teta2)) index++;
                     }
 
                    //Controlador
@@ -400,8 +400,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //updateLocation(location);
         this.location=location;
 
-        filterAndAddLocation(location);
-
         if (on==0){
             loc_anterior=location;
             //loc_filtrada
@@ -424,78 +422,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     }
 
-    private long getLocationAge(Location newLocation){
-        long locationAge;
-        if(android.os.Build.VERSION.SDK_INT >= 17) {
-            long currentTimeInMilli = (long)(SystemClock.elapsedRealtimeNanos() / 1000000);
-            long locationTimeInMilli = (long)(newLocation.getElapsedRealtimeNanos() / 1000000);
-            locationAge = currentTimeInMilli - locationTimeInMilli;
-        }else{
-            locationAge = System.currentTimeMillis() - newLocation.getTime();
-        }
-        return locationAge;
-    }
 
-    private boolean filterAndAddLocation(Location location){
-
-        long age = getLocationAge(location);
-
-        if(age > 5 * 1000){ //more than 5 seconds
-            Log.d(TAG, "Location is old");
-            return false;
-        }
-
-        if(location.getAccuracy() <= 0){
-            Log.d(TAG, "Latitidue and longitude values are invalid.");
-            return false;
-        }
-
-        float horizontalAccuracy = location.getAccuracy();
-        if(horizontalAccuracy > 10){ //10meter filter
-            Log.d(TAG, "Accuracy is too low.");
-            return false;
-        }
-
-        /* Kalman Filter */
-        float Qvalue;
-
-        long locationTimeInMillis = (long)(location.getElapsedRealtimeNanos() / 1000000);
-        long elapsedTimeInMillis = locationTimeInMillis - runStartTimeInMillis;
-
-        if(currentSpeed == 0.0f){
-            Qvalue = 3.0f; //3 meters per second
-        }else{
-            Qvalue = currentSpeed; // meters per second
-        }
-
-        kalmanFilter.Process(location.getLatitude(), location.getLongitude(), location.getAccuracy(), elapsedTimeInMillis, Qvalue);
-        double predictedLat = kalmanFilter.get_lat();
-        double predictedLng = kalmanFilter.get_lng();
-
-        Location predictedLocation = new Location(LocationManager.GPS_PROVIDER);//provider name is unecessary
-        predictedLocation.setLatitude(predictedLat);//your coords of course
-        predictedLocation.setLongitude(predictedLng);
-        float predictedDeltaInMeters =  predictedLocation.distanceTo(location);
-
-        if(predictedDeltaInMeters > 60){
-            Log.d(TAG, "Kalman Filter detects mal GPS, we should probably remove this from track");
-            kalmanFilter.consecutiveRejectCount += 1;
-
-            if(kalmanFilter.consecutiveRejectCount > 3){
-                kalmanFilter = new KalmanLatLong(3); //reset Kalman Filter if it rejects more than 3 times in raw.
-            }
-            return false;
-        }else{
-            kalmanFilter.consecutiveRejectCount = 0;
-        }
-
-        Log.d(TAG, "Location quality is good enough.");
-        currentSpeed = location.getSpeed();
-        loc_filtrada=predictedLocation;
-        loc_anterior=location;
-
-        return true;
-    }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -585,7 +512,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             // TODO: Consider calling
             return;
         }
-        runStartTimeInMillis = (long)(SystemClock.elapsedRealtimeNanos() / 1000000);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
     }
 
@@ -801,7 +727,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         mem[0]=false;mem[1]=false;
                         me2=false;
 
-                        tv_near.setText(""+"N:"+ near(items, location) );
                         if (resultt==TextToSpeech.LANG_MISSING_DATA||resultt==TextToSpeech.LANG_NOT_SUPPORTED) Toast.makeText(getApplicationContext(),"TTS no soportado", Toast.LENGTH_SHORT).show();
                         else{
                             toSpeech.speak("La carrera comienza en 3",TextToSpeech.QUEUE_FLUSH,null);
