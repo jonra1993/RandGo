@@ -273,21 +273,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                     //Algoritmo parar seleccion de nuevo punto en la pista
                     teta1=items.get(index).get_teta();              //Angulo bearing al punto anterior va de 0 a 360
-                    teta2=Math.toDegrees(Math.atan(-1/(Math.toRadians(teta1))));      //angulo ortogonal de ref_sigPunto
-                    aux_idex=sig_paso.bearingTo(location);  //va de -180 a 180
+                    teta2=Math.toDegrees(Math.atan(-1/(Math.toRadians(teta1))));      //angulo ortogonal de ref_sigPunto va -180 a 180
+                    aux_idex=sig_paso.bearingTo(location);
+                    if(aux_idex<0.0f) aux_idex+=360;        //va de 0 a 360
 
                     //le cambié estaban mal los casos  y no entiendo
-                    if(teta1>=0 && teta1<90) { //primer cuadrante
-                        if(!(aux_idex>teta2 && aux_idex<teta2+180)) index++;
+                    if(teta1>=0 && teta1<90) { //primer cuadrante teta 2 en negativo
+                        if(aux_idex<360+teta2 && aux_idex>teta2+180) index++;
                     }
-                    else if (teta1<=270 && teta1<360){ //segundo cuadrante
-                        if(!(aux_idex>teta2 || aux_idex>teta2+180)) index++;
+                    else if (teta1<=270 && teta1<360){ //segundo cuadrante teta 2 es positivo
+                        if(aux_idex>teta2 && aux_idex<teta2+180) index++;
                     }
-                    else if (teta1<=180 && teta1<270){ //tercer cuadrante
-                        if(!(aux_idex<teta2||aux_idex>teta2+180)) index++;
+                    else if (teta1<=180 && teta1<270){ //tercer cuadrante teta 2 es negativo
+                        if(aux_idex>360+teta2||aux_idex<teta2+180) index++;
                     }
-                    else if(teta1>=90 && teta1<180){ //cuarto cuadrante
-                        if(!(aux_idex>teta2 || aux_idex<180+teta2)) index++;
+                    else if(teta1>=90 && teta1<180){ //cuarto cuadrante teta 2 es positivo
+                        if(aux_idex<teta2 || aux_idex>180+teta2) index++;
                     }
 
                    //Controlador
