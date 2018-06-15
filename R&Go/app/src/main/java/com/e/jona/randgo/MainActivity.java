@@ -119,14 +119,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     //PID pid;
 
 
-    TextView tvDistancia, tvPresicionGPS, tvPrueba, tvPres;
+    TextView tvDistancia, tvPresicionGPS, tvPrueba, tvPres, tvLimites;
     boolean [] mem;
     boolean me2;
     private static int conta, conta_km;
     private int index;
 
     float teta1,aux_idex;
-    double teta2;
+    double teta2, lim_ang_min, lim_ang_max;
+    int cuadr;
 
 
     @Override
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         tvPresicionGPS=findViewById(R.id.tvPresicionGPS);
         tvPrueba=findViewById(R.id.tvPrueba);
         tvPres=findViewById(R.id.tvPres);
+        tvLimites=findViewById(R.id.tvLimites);
 
         mem= new boolean[3];
         mem[0]=false;mem[1]=false;
@@ -273,15 +275,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                     //le cambié estaban mal los casos  y no entiendo
                     if(teta1>=0 && teta1<90) { //primer cuadrante
+                        cuadr=1;
+                        lim_ang_min= 360+teta2;
+                        lim_ang_max=180+teta2;
                         if(!(aux_idex>360+teta2 || aux_idex<180+teta2)) index++;
                     }
                     else if(teta1>=90 && teta1<180){ //cuarto cuadrante
+                        cuadr=4;
+                        lim_ang_min= teta2;
+                        lim_ang_max=180+teta2;
                         if(!(aux_idex>teta2 && aux_idex<180+teta2)) index++;
                     }
                     else if (teta1>=180 && teta1<270){ //tercer cuadrante
+                        cuadr=3;
+                        lim_ang_min= 180+teta2;
+                        lim_ang_max=360+teta2;
                         if(!(aux_idex>180+teta2 && aux_idex<360+teta2)) index++;
                     }
                     else{ //segundo cuadrante
+                        cuadr=2;
+                        lim_ang_min= 180+teta2;
+                        lim_ang_max=teta2;
                         if(!(aux_idex>180+teta2 || aux_idex<teta2)) index++;
                     }
 
@@ -406,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 tvDistancia.setText(String.format("#: %d", index));
                 tvPrueba.setText(String.format("Bm : %.2f",aux_idex));
                 tvPres.setText(String.format(" %.2f",teta2));
+                tvLimites.setText(String.format("L: Cuadr: %d, Desde %.2f, hasta %.2f",cuadr,lim_ang_min,lim_ang_max ));
             }
         }
         else{
