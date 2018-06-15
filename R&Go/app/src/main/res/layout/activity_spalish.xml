@@ -36,7 +36,7 @@
 
             <TextView
                 android:id="@+id/tvInicio"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -50,11 +50,12 @@
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/relatline"
-            android:layout_width="match_parent"
+            android:layout_width="1000dp"
             android:layout_below="@+id/relat1"
             android:background="@drawable/ic_base"
             android:visibility="gone"
-            android:layout_height="60dp">
+            android:layout_marginTop="-30dp"
+            android:layout_height="70dp">
 
         </RelativeLayout>
     </RelativeLayout>

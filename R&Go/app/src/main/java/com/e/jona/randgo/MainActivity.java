@@ -272,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     teta1=items.get(index).get_teta();                               //Angulo bearing al punto anterior
                     teta2=Math.toDegrees(Math.atan(-1/(Math.toRadians(teta1))));      //angulo ortogonal de ref_sigPunto
                     aux_idex=sig_paso.bearingTo(location);
+                    if(aux_idex<0) aux_idex+=360;
 
                     //le cambié estaban mal los casos  y no entiendo
                     if(teta1>=0 && teta1<90) { //primer cuadrante

@@ -27,17 +27,11 @@ public class Spalish extends AppCompatActivity {
     TextToSpeech toSpeech;
     int resultt;
 
+    Animation myanim;
+
     private TextView tvInicio;
     private ImageView iv;
 
-    Handler handler= new Handler();
-    Runnable runnable= new Runnable() {
-        @Override
-        public void run() {
-            relat1.setVisibility(View.VISIBLE);
-            relatline.setVisibility(View.VISIBLE);
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +48,29 @@ public class Spalish extends AppCompatActivity {
 
         tvInicio=findViewById(R.id.tvInicio);
         //iv=findViewById(R.id.iv);
-        Animation myanim= AnimationUtils.loadAnimation(this,R.anim.mytransition);
+        myanim= AnimationUtils.loadAnimation(this,R.anim.mytransition);
         //iv.startAnimation(myanim);
 
+        Handler handler= new Handler();
+        Runnable runnable= new Runnable() {
+            @Override
+            public void run() {
+                relat1.setVisibility(View.VISIBLE);
+                tvInicio.startAnimation(myanim);
+            }
+        };
+
+        Handler handler2= new Handler();
+        Runnable runnable2= new Runnable() {
+            @Override
+            public void run() {
+                relatline.setVisibility(View.VISIBLE);
+                relatline.startAnimation(myanim);
+            }
+        };
+
         handler.postDelayed(runnable,2000);
-        tvInicio.startAnimation(myanim);
+        handler2.postDelayed(runnable2,3100);
 
         toSpeech = new TextToSpeech(Spalish.this, new TextToSpeech.OnInitListener() {
             @Override
