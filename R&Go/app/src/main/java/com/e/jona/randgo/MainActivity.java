@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     double teta2, lim_ang_min, lim_ang_max;
     int cuadr;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,11 +171,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         setData_Audio(true);
 
-        //inicialización del PID
-        /*DataHolder.setPID(1,0,0);
-        pid = new PID(DataHolder.getPID_P(),DataHolder.getPID_I(),DataHolder.getPID_D());
-        pid.setOutputLimits(-100,100);
-        volumen_normal=0.0f;¨*/
         mp=MediaPlayer.create(this,R.raw.sinsilencio);
         mp.setLooping(true);
         map = (MapView) findViewById(R.id.map);
@@ -266,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         index=0;
                     }
                     float ref= items.get(index).getitemBearing();
-                    //float dis_dinamica=location.distanceTo(sig_paso);
 
                     //Algoritmo parar seleccion de nuevo punto en la pista
                     teta1=items.get(index).get_teta();                               //Angulo bearing al punto anterior
@@ -301,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     }
 
                    //Controlador
-                    float[] temp = funcion_sonido_controlador(copy,ref,-5,5);
+                    float[] temp = funcion_sonido_controlador(copy,ref,-3,3);
                     Log.d("Volumen r", String.valueOf(temp[0]));
                     Log.d("Volumen l", String.valueOf(temp[1]));
                     mp.setVolume(temp[1], temp[0]);
@@ -321,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 if(status==TextToSpeech.SUCCESS)
                 {
                     Locale locSpanish = new Locale("spa", "ECU");
-                    //result=toSpeech.setLanguage(Locale.UK);
                     resultt=toSpeech.setLanguage(locSpanish);
                 }
                 else
@@ -414,9 +406,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             on=1;
         }
         if (location.hasBearing()){
-            calculo_distancia(location);
             if(comenzar==true) {
-                bearing_actual = location.getBearing();
+                bearing_actual=location.getBearing();
                 tvPresicionGPS.setText(String.format("Bant: %.2f",teta1));
                 tvDistancia.setText(String.format("#: %d", index));
                 tvPrueba.setText(String.format("Bm : %.2f",aux_idex));
@@ -820,12 +811,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         else if (error<-180) error+=360;
 
         if(error>=0){
-            r =  error;
             l =  0.0f;
+            if(error>=hd) r =  error;
+            else r =0.0f;
+
         }
         else {
-            l =  -error;
             r =  0.0f;
+            if (error<=hi) l =  -error;
+            else l=0.0f;
         }
 
         if(l<=50)  l= (float) (Math.pow(1/101.0,-l/90.0)-1)/100;
@@ -869,4 +863,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         return minIndex+1;  //si se le aumenta 1 se asegura q sea un punto adelante de la persona
     }
 }
+/* Filtro de medio movil
+int aux_inic=0;
+    int ind_filtro=3;
+    float[] vect_bearing=new float[3];
+    boolean inici_bearing=true;
 
+    calculo_distancia(location);
+            vect_bearing[aux_inic]=location.getBearing();
+            aux_inic++;
+            if (aux_inic>=ind_filtro) {
+                aux_inic = 0;
+                if (inici_bearing = true) inici_bearing = false;
+            }
+
+            if(inici_bearing=false){
+                float sum_bearing=0;
+                for (int j=0;j>=(ind_filtro-1);j++){
+                    sum_bearing+=vect_bearing[j];
+                }
+                bearing_actual=sum_bearing/ind_filtro;
+            }
+            tvPres.setText(String.format(" %d",aux_inic));*/
