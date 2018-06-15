@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="GPS Track Editor" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gte="http://www.gpstrackeditor.com/xmlschemas/General/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" targetNamespace="http://www.topografix.com/GPX/1/1" elementFormDefault="qualified" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
 <metadata>
-	<name>carolina.gpx</name>
+	<name>carolina2.gpx</name>
 </metadata>
 <trk>
 	<name>jueves, 31 de mayo de 2018</name>
@@ -163,14 +163,6 @@
 				<gte:gps speed="12.7"/>
 			</extensions>
 		</trkpt>
-		<trkpt lat="-0.183422" lon="-78.483715">
-			<ele>2802.00</ele>
-			<time>2018-05-31T19:58:18Z</time>
-			<hdop>4.6</hdop>
-			<extensions>
-				<gte:gps speed="12.7"/>
-			</extensions>
-		</trkpt>
 		<trkpt lat="-0.183171" lon="-78.483671">
 			<ele>2802.00</ele>
 			<time>2018-05-31T19:58:26Z</time>
@@ -190,14 +182,6 @@
 		<trkpt lat="-0.182655" lon="-78.483603">
 			<ele>2800.00</ele>
 			<time>2018-05-31T19:58:43Z</time>
-			<hdop>4.6</hdop>
-			<extensions>
-				<gte:gps speed="12.6"/>
-			</extensions>
-		</trkpt>
-		<trkpt lat="-0.182447" lon="-78.483577">
-			<ele>2801.00</ele>
-			<time>2018-05-31T19:58:50Z</time>
 			<hdop>4.6</hdop>
 			<extensions>
 				<gte:gps speed="12.6"/>

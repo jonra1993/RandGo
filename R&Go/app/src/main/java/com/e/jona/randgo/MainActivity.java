@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         DataHolder.setData("NULL");
                         break;
                     case "Carolina":
-                        cargargpx("carolina.gpx");
+                        cargargpx("carolina2.gpx");
                         DataHolder.setData("NULL");
 
                         break;
