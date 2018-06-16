@@ -407,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         if (location.hasBearing()){
             if(comenzar==true) {
+                calculo_distancia(location);
                 bearing_actual=location.getBearing();
                 tvPresicionGPS.setText(String.format("Bant: %.2f",teta1));
                 tvDistancia.setText(String.format("#: %d", index));
