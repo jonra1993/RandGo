@@ -87,11 +87,11 @@
         android:id="@+id/b_cargar_gpx"
         android:layout_width="370dp"
         android:layout_gravity="center"
-        android:layout_height="10dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="@string/tit6"
         android:textSize="28dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         />
     <CheckBox android:id="@+id/checkbox_audio"
         android:layout_width="wrap_content"
@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:text="Desarrollado por: Jonathan Vargas y Diego Navas "
         android:textSize="16dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         android:gravity="center_horizontal"
         />
