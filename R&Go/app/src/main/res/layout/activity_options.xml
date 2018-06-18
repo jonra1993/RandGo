@@ -60,24 +60,25 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="ESTADIO ALANGASI"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:textSize="28dp"
         />
     <Button
         android:id="@+id/btestadio4"
         android:layout_width="370dp"
         android:layout_gravity="center"
-        android:layout_height="wrap_content"
+        android:layout_height="12dp"
         android:layout_marginBottom="10dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:text="ESTADIO ALANGASI 2"
         android:textSize="28dp"
+
         />
 
     <TextView
         android:id="@+id/tit5"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="1dp"
         android:text="@string/tit5"
         android:textSize="28dp"
         android:gravity="center"
@@ -95,10 +96,11 @@
         />
     <CheckBox android:id="@+id/checkbox_audio"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:textSize="20dp"
         android:text="Habilitar Audio Guía"
+        android:visibility="invisible"
         />
 
     <TextView
@@ -106,9 +108,26 @@
         android:layout_height="wrap_content"
         android:text="Desarrollado por: Jonathan Vargas y Diego Navas "
         android:textSize="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center_horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:gravity="left"
         />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="jonathan.vargas1104@gmail.com "
+        android:textSize="16dp"
+        android:layout_marginBottom="1dp"
+        android:gravity="left"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="diegonf26@gmail.com "
+        android:textSize="16dp"
+        android:layout_marginBottom="1dp"
+        android:gravity="left"
+        />
+
 
 </LinearLayout>

@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     double lat_actual, lon_actual, lat_ant, lon_ant;
     float dist = 0;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
-    private static final long MIN_TIME_BW_UPDATES = 20;
-    private static final int lim_accur_gps=10;
+    private static final long MIN_TIME_BW_UPDATES = 5;
+    private static final int lim_accur_gps=15;
 
     MediaPlayer mp;
     //PID pid;
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     }
 
                    //Controlador
-                    float[] temp = funcion_sonido_controlador(copy,ref,-3,3);
+                    float[] temp = funcion_sonido_controlador(copy,ref,0,0);
                     Log.d("Volumen r", String.valueOf(temp[0]));
                     Log.d("Volumen l", String.valueOf(temp[1]));
                     mp.setVolume(temp[1], temp[0]);
@@ -823,10 +823,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             else l=0.0f;
         }
 
-        if(l<=50)  l= (float) (Math.pow(1/101.0,-l/90.0)-1)/100;
+        if(l<=45)  l= (float) (Math.pow(1/101.0,-l/45.0)-1)/100;
         else l=100;
 
-        if(r<=50)  r= (float) (Math.pow(1/101.0,-r/90.0)-1)/100;
+        if(r<=45)  r= (float) (Math.pow(1/101.0,-r/45.0)-1)/100;
         else r=100;
 
         return new float[] {l,r};
@@ -861,7 +861,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         }
         if(minIndex==(items.size()-1)) minIndex=-1;
-        return minIndex+1;  //si se le aumenta 1 se asegura q sea un punto adelante de la persona
+        return minIndex;  //si se le aumenta 1 se asegura q sea un punto adelante de la persona
     }
 }
 /* Filtro de medio movil

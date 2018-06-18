@@ -37,12 +37,13 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
-        mem= new boolean[5];
+        mem= new boolean[6];
         mem[0]=false;
         mem[1]=false;
         mem[2]=false;
         mem[3]=false;
         mem[4]=false;
+        mem[5]=false;
         b_cargar_gpx=findViewById(R.id.b_cargar_gpx);
         b_cargar_gpx.setOnClickListener(this);
         b_carolina=findViewById(R.id.b_carolina);
@@ -97,6 +98,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     mem[1]=false;
                     mem[2]=false;
                     mem[4]=false;
+                    mem[5]=false;
                     tiempo=0;
                 }
 
@@ -111,7 +113,22 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId())
         {
             case R.id.b_cargar_gpx:
-                DataHolder.setData("GPX");
+
+                if(mem[5]==true){
+                    this.finish();
+                    DataHolder.setData("GPX");
+                    toSpeech.speak("Elija el Archivo",TextToSpeech.QUEUE_FLUSH,null);
+                    if (checkbox1.isChecked()==true) setData_Audio(true);
+                    else setData_Audio(false);
+                    break;
+                }
+                mem[0]=false;
+                mem[1]=false;
+                mem[2]=false;
+                mem[3]=false;
+                mem[4]=false;
+                mem[5]=true;
+                toSpeech.speak("Cargar archivo desde la memoria interna",TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_carolina:
                 DataHolder.setData("Carolina");
@@ -127,6 +144,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[2]=false;
                 mem[3]=false;
                 mem[4]=false;
+                mem[5]=false;
                 toSpeech.speak(getString(R.string.tit2),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_estadiox:
@@ -143,6 +161,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[2]=false;
                 mem[3]=false;
                 mem[4]=false;
+                mem[5]=false;
                 toSpeech.speak(getString(R.string.tit3),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.b_estadioy:
@@ -159,6 +178,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[2]=true;
                 mem[3]=false;
                 mem[4]=false;
+                mem[5]=false;
                 toSpeech.speak(getString(R.string.tit4),TextToSpeech.QUEUE_FLUSH,null);
                 break;
             case R.id.btestadio3:
@@ -175,6 +195,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[2]=false;
                 mem[3]=true;
                 mem[4]=false;
+                mem[5]=false;
                 toSpeech.speak("Estadio Alangasi",TextToSpeech.QUEUE_FLUSH,null);
                 break;
 
@@ -192,6 +213,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[2]=false;
                 mem[3]=false;
                 mem[4]=true;
+                mem[5]=false;
                 toSpeech.speak("Estadio Alangasi 2",TextToSpeech.QUEUE_FLUSH,null);
                 break;
         }
@@ -215,6 +237,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[0]=false;
                 mem[1]=false;
                 mem[2]=false;
+                mem[4]=false;
+                mem[5]=false;
             }
             else{
                 this.finish();
@@ -222,6 +246,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[0]=false;
                 mem[1]=false;
                 mem[2]=false;
+                mem[4]=false;
+                mem[5]=false;
 
             }
         }
