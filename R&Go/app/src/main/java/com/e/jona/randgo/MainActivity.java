@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     double lat_actual, lon_actual, lat_ant, lon_ant;
     float dist = 0;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
-    private static final long MIN_TIME_BW_UPDATES = 5;
+    private static final long MIN_TIME_BW_UPDATES = 20;
     private static final int lim_accur_gps=15;
 
     MediaPlayer mp;
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     }
 
                    //Controlador
-                    float[] temp = funcion_sonido_controlador(copy,ref,0,0);
+                    float[] temp = funcion_sonido_controlador(copy,ref,-5,5);
                     Log.d("Volumen r", String.valueOf(temp[0]));
                     Log.d("Volumen l", String.valueOf(temp[1]));
                     mp.setVolume(temp[1], temp[0]);
@@ -813,22 +813,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         if(error>=0){
             l =  0.0f;
-            if(error>=hd) r =  error;
+            if(error>=hd){
+                r =  error;
+                if(r<=45)  r= (float) (Math.pow(1/31.0,-r/45.0)+69)/100;
+                else r=100;
+            }
             else r =0.0f;
 
         }
         else {
             r =  0.0f;
-            if (error<=hi) l =  -error;
+            if (error<=hi){
+                l =  -error;
+                if(l<=45)  l= (float) (Math.pow(1/31.0,-l/45.0)+69)/100;
+                else l=100;
+            }
             else l=0.0f;
         }
-
-        if(l<=45)  l= (float) (Math.pow(1/101.0,-l/45.0)-1)/100;
-        else l=100;
-
-        if(r<=45)  r= (float) (Math.pow(1/101.0,-r/45.0)-1)/100;
-        else r=100;
-
         return new float[] {l,r};
     }
 
@@ -860,7 +861,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 minIndex = i;           // store index of nearest marker in minIndex
             }
         }
-        if(minIndex==(items.size()-1)) minIndex=-1;
+        //if(minIndex==(items.size()-1)) minIndex=-1;
         return minIndex;  //si se le aumenta 1 se asegura q sea un punto adelante de la persona
     }
 }
