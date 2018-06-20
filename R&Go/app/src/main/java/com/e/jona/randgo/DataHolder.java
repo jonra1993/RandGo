@@ -5,7 +5,7 @@ package com.e.jona.randgo;
 //https://www.youtube.com/watch?v=ueeRgnYamO4&index=13&list=PLpOqH6AE0tNh5rvbCb03w8ORR8bOoftZ6
 
 public class DataHolder {
-    private static boolean audio;
+    private static boolean audio,aur_oseos;
     private static float P, I, D;
     private static String orden;
 
@@ -15,6 +15,14 @@ public class DataHolder {
 
     public static void setData(String data) {
         DataHolder.orden = data;
+    }
+
+    public static boolean getAuriculares_oseos() {
+        return aur_oseos;
+    }
+
+    public static void setAuriculares_oseos(boolean data) {
+        DataHolder.aur_oseos = data;
     }
 
     public static boolean getData_Audio() {

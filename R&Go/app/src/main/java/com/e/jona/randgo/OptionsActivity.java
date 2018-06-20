@@ -21,6 +21,8 @@ import java.util.TimerTask;
 
 import static com.e.jona.randgo.DataHolder.getData_Audio;
 import static com.e.jona.randgo.DataHolder.setData_Audio;
+import static com.e.jona.randgo.DataHolder.getAuriculares_oseos;
+import static com.e.jona.randgo.DataHolder.setAuriculares_oseos;
 
 public class OptionsActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -28,7 +30,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
     TextToSpeech toSpeech;
     int resultt;
     public boolean [] mem;
-    private CheckBox checkbox1;
+    private CheckBox cbAuriculares_oseos, checkbox1;
     private Timer myTimer;
     int tiempo=0;
 
@@ -57,9 +59,13 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         btestadio4=findViewById(R.id.btestadio4);
         btestadio4.setOnClickListener(this);
 
-        checkbox1=(CheckBox)findViewById(R.id.checkbox_audio);
+        checkbox1=findViewById(R.id.checkbox_audio);
         if(getData_Audio()) checkbox1.setChecked(true);
         else checkbox1.setChecked(false);
+
+        cbAuriculares_oseos=findViewById(R.id.cdAuriculare_oseos);
+        if(getAuriculares_oseos())cbAuriculares_oseos.setChecked(true);
+        else cbAuriculares_oseos.setChecked(false);
 
         //Modificar ToolBar
         android.support.v7.widget.Toolbar toolbar_conf=findViewById(R.id.toolbar_conf);
@@ -154,7 +160,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     toSpeech.speak(getString(R.string.tit3)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
                     if (checkbox1.isChecked()==true) setData_Audio(true);
                     else setData_Audio(false);
-                    break;
+                break;
                 }
                 mem[0]=false;
                 mem[1]=true;
@@ -217,6 +223,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 toSpeech.speak("Estadio Alangasi 2",TextToSpeech.QUEUE_FLUSH,null);
                 break;
         }
+        if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
+        else setAuriculares_oseos(false);
 
     }
 

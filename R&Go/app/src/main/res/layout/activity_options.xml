@@ -94,13 +94,24 @@
         android:textSize="28dp"
         android:visibility="visible"
         />
+
+    <CheckBox
+        android:id="@+id/cdAuriculare_oseos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="Habilitar auriculares oseos" />
+
+
     <CheckBox android:id="@+id/checkbox_audio"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:textSize="20dp"
         android:text="Habilitar Audio Guía"
-        android:visibility="invisible"
+        android:visibility="gone"
         />
 
     <TextView

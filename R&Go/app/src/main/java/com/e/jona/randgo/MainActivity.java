@@ -23,6 +23,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -73,7 +74,9 @@ import com.e.jona.randgo.DataHolder;
 import java.util.concurrent.TimeUnit;
 import java.util.*;
 
+import static com.e.jona.randgo.DataHolder.getAuriculares_oseos;
 import static com.e.jona.randgo.DataHolder.getData_Audio;
+import static com.e.jona.randgo.DataHolder.setAuriculares_oseos;
 import static com.e.jona.randgo.DataHolder.setData_Audio;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, GPXListeners.GPXParserListener, GPXListeners.GPXParserProgressListener  {
@@ -170,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         index=0;
 
         setData_Audio(true);
+        setAuriculares_oseos(true);
 
         mp=MediaPlayer.create(this,R.raw.sinsilencio);
         mp.setLooping(true);
@@ -324,6 +328,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
             }
         });
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Habilitar GPS para el uso correcto de esta aplicacion")
+                    .setCancelable(false)
+                    .setPositiveButton("Encender GPS", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
 
@@ -815,7 +837,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             l =  0.0f;
             if(error>=hd){
                 r =  error;
-                if(r<=45)  r= (float) (Math.pow(1/31.0,-r/45.0)+69)/100;
+                if(r<=45) {
+                    if (getAuriculares_oseos()) r= (float) (Math.pow(1/31.0,-r/45.0)+69)/100;
+                    else r= (float)(Math.pow(1/101.0,-r/45.0)-1)/100;
+                }
                 else r=100;
             }
             else r =0.0f;
@@ -825,7 +850,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             r =  0.0f;
             if (error<=hi){
                 l =  -error;
-                if(l<=45)  l= (float) (Math.pow(1/31.0,-l/45.0)+69)/100;
+                if(l<=45) {
+                    if (getAuriculares_oseos()) l= (float) (Math.pow(1/31.0,-l/45.0)+69)/100;
+                    else l= (float)(Math.pow(1/101.0,-l/45.0)-1)/100;
+                }
                 else l=100;
             }
             else l=0.0f;
