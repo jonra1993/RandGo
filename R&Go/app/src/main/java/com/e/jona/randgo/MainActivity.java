@@ -330,15 +330,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         });
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Habilitar GPS para el uso correcto de esta aplicacion")
+            builder.setMessage("Es necesario habilitar el GPS para el uso correcto de esta aplicacion")
                     .setCancelable(false)
-                    .setPositiveButton("Encender GPS", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("Encender GPS", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(intent);
                         }
                     })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                         }
@@ -739,9 +739,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             case R.id.btnNavigation:
                 if(comenzar==false){
                     if(mem[0]==false){
-                        toSpeech.speak("Botón de inicio de carrera",TextToSpeech.QUEUE_FLUSH,null);
-                        mem[0]=true;mem[1]=false;
-                        me2=false;
+                        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                            toSpeech.speak("Botón de inicio de carrera",TextToSpeech.QUEUE_FLUSH,null);
+                            mem[0]=true;mem[1]=false;
+                            me2=false;
+                        }
+                        else{
+                            toSpeech.speak("Encender el GPS para continuar",TextToSpeech.QUEUE_FLUSH,null);
+                        }
                     }
                     else{
                         mem[0]=false;mem[1]=false;
