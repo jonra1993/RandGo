@@ -70,7 +70,7 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
         //Modificar ToolBar
         android.support.v7.widget.Toolbar toolbar_conf=findViewById(R.id.toolbar_conf);
         setSupportActionBar(toolbar_conf);
-        getSupportActionBar().setIcon(R.drawable.ic_toolbar);
+        getSupportActionBar().setIcon(R.drawable.ic_baraudiorun);
 
 
         toSpeech = new TextToSpeech(OptionsActivity.this, new TextToSpeech.OnInitListener() {

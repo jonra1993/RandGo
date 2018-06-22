@@ -18,7 +18,7 @@
             android:layout_height="60dp"
             android:layout_width="match_parent"
             app:titleTextColor="@color/colorIniWhite"
-            android:background="@drawable/grad_big" />
+            android:background="@color/colorAudioRunPrimario" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,7 +78,7 @@
         android:layout_margin="10dp"
         android:gravity="center_horizontal"
         android:src="@drawable/ic_location_searching_white_24dp"
-        app:backgroundTint="@color/colorIniGradientEnd"
+        app:backgroundTint="@color/colorAudioRunPrimario"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -91,7 +91,7 @@
         android:layout_margin="10dp"
         android:src="@drawable/ic_navigation"
         android:id="@+id/btnNavigation"
-        app:backgroundTint="@color/colorIniGradientEnd"
+        app:backgroundTint="@color/colorAudioRunPrimario"
         />
 
 

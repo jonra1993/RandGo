@@ -7,9 +7,10 @@
     android:animateLayoutChanges="true"
     android:theme="@style/AppTheme.NoActionBar"
     tools:context=".Spalish"
-    android:background="@drawable/grad_big">
+    android:background="@drawable/pprincipal">
 
     <RelativeLayout
+        android:id="@+id/relat0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="40dp"
@@ -20,11 +21,10 @@
             android:id="@+id/img_corredores"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:src="@drawable/portada_corredores"
+            android:src="@drawable/audiorun_01"
             android:adjustViewBounds="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/marco"
-            android:backgroundTint="@color/colorIniWhite"
+            android:visibility="gone"
             android:scaleType="fitCenter"/>
 
         <RelativeLayout
@@ -32,7 +32,17 @@
             android:layout_below="@+id/img_corredores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
+
+            <ImageView
+                android:id="@+id/img_audioRun"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:src="@drawable/audiorun_01"
+                android:adjustViewBounds="true"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitCenter"/>
 
             <TextView
                 android:id="@+id/tvInicio"
@@ -40,7 +50,6 @@
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="R&amp;Go"
                 android:textSize="50dp"
                 android:textAlignment="center"
                 android:textStyle="bold"

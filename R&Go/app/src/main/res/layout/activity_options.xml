@@ -13,7 +13,7 @@
         android:layout_height="60dp"
         android:layout_width="match_parent"
         app:titleTextColor="@color/colorIniWhite"
-        android:background="@drawable/grad_big" />
+        android:background="@color/colorAudioRunPrimario" />
 
     <TextView
         android:id="@+id/tit1"

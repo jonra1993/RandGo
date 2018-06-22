@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //Modificar ToolBar
         android.support.v7.widget.Toolbar my_toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(my_toolbar);
-        getSupportActionBar().setIcon(R.drawable.ic_toolbar);
+        getSupportActionBar().setIcon(R.drawable.ic_baraudiorun);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

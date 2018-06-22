@@ -19,8 +19,8 @@
 
     <style name="Tema_inicio" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorIniGradientStart</item>
-        <item name="colorPrimaryDark">@color/colorIniGradientEnd</item>
-        <item name="colorAccent">@color/colorIniGradientEnd</item>
+        <item name="colorPrimaryDark">@color/colorAudioRunPrimario</item>
+        <item name="colorAccent">@color/colorAudioRunPrimario</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:actionBarSize">60dp</item>
         <item name="actionBarSize">60dp</item>
@@ -29,8 +29,8 @@
 
     <style name="Tema_Home" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorIniGradientStart</item>
-        <item name="colorPrimaryDark">@color/colorIniGradientEnd</item>
-        <item name="colorAccent">@color/colorIniGradientEnd</item>
+        <item name="colorPrimaryDark">@color/colorAudioRunPrimario</item>
+        <item name="colorAccent">@color/colorAudioRunPrimario</item>
         <item name="android:windowFullscreen">true</item>
     </style>
 </resources>

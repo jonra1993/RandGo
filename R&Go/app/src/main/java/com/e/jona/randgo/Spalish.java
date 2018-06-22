@@ -44,33 +44,31 @@ public class Spalish extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
 
         relat1= findViewById(R.id.relat1);
-        relatline= findViewById(R.id.relatline);
+        //relatline= findViewById(R.id.relatline);
 
         tvInicio=findViewById(R.id.tvInicio);
-        //iv=findViewById(R.id.iv);
         myanim= AnimationUtils.loadAnimation(this,R.anim.mytransition);
-        //iv.startAnimation(myanim);
 
         Handler handler= new Handler();
         Runnable runnable= new Runnable() {
             @Override
             public void run() {
                 relat1.setVisibility(View.VISIBLE);
-                tvInicio.startAnimation(myanim);
+                //tvInicio.startAnimation(myanim);
             }
         };
 
-        Handler handler2= new Handler();
+        /*Handler handler2= new Handler();
         Runnable runnable2= new Runnable() {
             @Override
             public void run() {
                 relatline.setVisibility(View.VISIBLE);
                 relatline.startAnimation(myanim);
             }
-        };
+        };*/
 
         handler.postDelayed(runnable,2000);
-        handler2.postDelayed(runnable2,3100);
+        //handler2.postDelayed(runnable2,3100);
 
         toSpeech = new TextToSpeech(Spalish.this, new TextToSpeech.OnInitListener() {
             @Override
@@ -81,7 +79,7 @@ public class Spalish extends AppCompatActivity {
                     Locale locSpanish = new Locale("spa", "ECU");
                     //result=toSpeech.setLanguage(Locale.UK);
                     resultt=toSpeech.setLanguage(locSpanish);
-                    toSpeech.speak("Bienvenido a ere and GO, app diseñada para atletas con discapacidad visual",TextToSpeech.QUEUE_FLUSH,null);
+                    toSpeech.speak("Bienvenido a audio run, app diseñada para atletas con discapacidad visual",TextToSpeech.QUEUE_FLUSH,null);
                 }
                 else
                 {
