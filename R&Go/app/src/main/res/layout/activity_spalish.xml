@@ -7,7 +7,7 @@
     android:animateLayoutChanges="true"
     android:theme="@style/AppTheme.NoActionBar"
     tools:context=".Spalish"
-    android:background="@drawable/pprincipal">
+    android:background="@drawable/fpantalla">
 
     <RelativeLayout
         android:id="@+id/relat0"
