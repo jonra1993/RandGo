@@ -55,9 +55,9 @@
 
     <Button
         android:id="@+id/btestadio3"
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
         android:layout_gravity="center"
-        android:layout_height="wrap_content"
+        android:layout_height="15dp"
         android:layout_marginBottom="10dp"
         android:text="ESTADIO ALANGASI"
         android:visibility="invisible"
@@ -102,6 +102,7 @@
         android:textSize="20dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
+        android:layout_marginBottom="15dp"
         android:text="Habilitar auriculares oseos" />
 
 
@@ -118,26 +119,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Desarrollado por: Jonathan Vargas y Diego Navas "
-        android:textSize="16dp"
+        android:textSize="14dp"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
-        android:gravity="left"
+        android:gravity="center_horizontal"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="jonathan.vargas1104@gmail.com "
-        android:textSize="16dp"
+        android:textSize="14dp"
         android:layout_marginBottom="1dp"
-        android:gravity="left"
+        android:gravity="center_horizontal"
         />
+    <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="diegonf26@gmail.com "
+    android:textSize="14dp"
+    android:layout_marginBottom="1dp"
+    android:gravity="center_horizontal"
+    />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="diegonf26@gmail.com "
-        android:textSize="16dp"
+        android:text="Con el apoyo de Banco General Rumiñahui"
+        android:textSize="14dp"
         android:layout_marginBottom="1dp"
-        android:gravity="left"
+        android:gravity="center_horizontal"
         />
 
 

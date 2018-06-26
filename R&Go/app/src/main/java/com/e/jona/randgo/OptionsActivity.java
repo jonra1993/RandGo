@@ -126,6 +126,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     toSpeech.speak("Elija el Archivo",TextToSpeech.QUEUE_FLUSH,null);
                     if (checkbox1.isChecked()==true) setData_Audio(true);
                     else setData_Audio(false);
+                    if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
+                    else setAuriculares_oseos(false);
                     break;
                 }
                 mem[0]=false;
@@ -143,6 +145,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     toSpeech.speak(getString(R.string.tit2)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
                     if (checkbox1.isChecked()==true) setData_Audio(true);
                     else setData_Audio(false);
+                    if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
+                    else setAuriculares_oseos(false);
                     break;
                 }
                 mem[0]=true;
@@ -160,6 +164,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     toSpeech.speak(getString(R.string.tit3)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
                     if (checkbox1.isChecked()==true) setData_Audio(true);
                     else setData_Audio(false);
+                    if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
+                    else setAuriculares_oseos(false);
                 break;
                 }
                 mem[0]=false;
@@ -177,6 +183,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     toSpeech.speak(getString(R.string.tit4)+" cargado",TextToSpeech.QUEUE_FLUSH,null);
                     if (checkbox1.isChecked()==true) setData_Audio(true);
                     else setData_Audio(false);
+                    if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
+                    else setAuriculares_oseos(false);
                     break;
                 }
                 mem[0]=false;
@@ -194,6 +202,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     toSpeech.speak("Estadio Alangasi"+" cargado",TextToSpeech.QUEUE_FLUSH,null);
                     if (checkbox1.isChecked()==true) setData_Audio(true);
                     else setData_Audio(false);
+                    if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
+                    else setAuriculares_oseos(false);
                     break;
                 }
                 mem[0]=false;
@@ -212,6 +222,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                     toSpeech.speak("Estadio Alangasi 2"+" cargado",TextToSpeech.QUEUE_FLUSH,null);
                     if (checkbox1.isChecked()==true) setData_Audio(true);
                     else setData_Audio(false);
+                    if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
+                    else setAuriculares_oseos(false);
                     break;
                 }
                 mem[0]=false;
@@ -223,9 +235,6 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 toSpeech.speak("Estadio Alangasi 2",TextToSpeech.QUEUE_FLUSH,null);
                 break;
         }
-        if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
-        else setAuriculares_oseos(false);
-
     }
 
     @Override
@@ -256,6 +265,8 @@ public class OptionsActivity extends AppCompatActivity implements View.OnClickLi
                 mem[2]=false;
                 mem[4]=false;
                 mem[5]=false;
+                if (cbAuriculares_oseos.isChecked()==true) setAuriculares_oseos(true);
+                else setAuriculares_oseos(false);
 
             }
         }
