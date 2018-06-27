@@ -739,13 +739,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             case R.id.btnNavigation:
                 if(comenzar==false){
                     if(mem[0]==false){
-                        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)&&location!=null){
                             toSpeech.speak("Botón de inicio de carrera",TextToSpeech.QUEUE_FLUSH,null);
                             mem[0]=true;mem[1]=false;
                             me2=false;
                         }
                         else{
-                            toSpeech.speak("Encender el GPS para continuar",TextToSpeech.QUEUE_FLUSH,null);
+                            toSpeech.speak("No se ha podido conectar con el gps",TextToSpeech.QUEUE_FLUSH,null);
                         }
                     }
                     else{
