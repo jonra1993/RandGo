@@ -734,6 +734,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     mem[0]=false;mem[1]=false;
                     me2=false;
                 }
+                else{
+                    toSpeech.speak("No se ha podido conectar con el gps",TextToSpeech.QUEUE_FLUSH,null);
+                }
                 break;
 
             case R.id.btnNavigation:
